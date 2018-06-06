@@ -1,0 +1,30 @@
+.ripple {
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(000, 000, 000, 0.1);
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+  position: absolute;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.ripple_active{
+  -webkit-animation: repple .3s linear;
+  animation: repple .3s linear;
+}
+
+@-webkit-keyframes repple {
+  100% {
+    -webkit-transform: scale(2);
+    opacity: 0;
+  }
+}
+@keyframes repple {
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}

@@ -1,0 +1,170 @@
+a { text-decoration: none; }
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+/* 取消默认样式 */
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+select,
+button {
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);   /* 点击高亮的颜色*/
+}
+
+ul,
+li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+i {
+  font-style: normal;
+}
+body {
+  font-size: 12px;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  color: #666;
+  -webkit-font-smoothing: antialiased;
+  -webkit-overflow-scrolling: touch;
+}
+body::-webkit-scrollbar {
+  width: 0;
+}
+
+input,
+textarea,
+button {
+  padding: 0;
+  border: 0;
+  outline: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+button {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+.iconfont {
+  color: #333;
+  font-size: .20rem;
+}
+.blue {
+  color: #31DFCC;
+}
+.f8 {
+  font-size: 12px;
+  -webkit-transform: scale(0.7);
+  -moz-transform: scale(0.7);
+  -ms-transform: scale(0.7);
+  -o-transform: scale(0.7);
+  transform: scale(0.7);
+}
+
+.f10 {
+  font-size: 12px;
+  -webkit-transform: scale(0.9);
+  -moz-transform: scale(0.9);
+  -ms-transform: scale(0.9);
+  -o-transform: scale(0.9);
+  transform: scale(0.9);
+}
+
+.f12 {
+  font-size: 12px;
+}
+
+.f14 {
+  font-size: .14rem;
+}
+
+.f16 {
+  font-size: 16px;
+}
+
+.f18 {
+  font-size: 18px;
+}
+
+.f20 {
+  font-size: 20px;
+}
+
+.c9 {
+  color: #999;
+}
+
+.flex {
+  display: flex;
+  justify-content: center;
+}
+
+.f1 {
+  flex: 1;
+}
+
+.f2 {
+  flex: 2;
+}
+
+.flex_items {
+  align-items: center;
+}
+
+.flex_start {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.mb {
+  margin-bottom: 10px;
+}
+.start {
+  height: 44px;
+  line-height: 44px;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.pd {
+  padding: 0 12px;
+}
+.nodata {
+  flex: 1;
+  padding-top: 20%;
+  text-align: center;
+  font-size: 18px;
+}
+._copyright {
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  color: #999;
+  font-size: 400;
+}
+.ix .make, .ix .gui .bg {
+  bottom: .8rem;
+}
+.ix nav {
+  bottom: .3rem;
+}

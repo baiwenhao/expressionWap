@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>全民表情-test</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Access-Control-Allow-Origin" content="*">
+  <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+  <!-- <meta name="viewport" content="width=device-width, viewport-fit=cover"> -->
+  <!-- https://blog.csdn.net/kun525331194/article/details/53932740 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" type="text/css" href="<%= vendor %>.css">
+  <link rel="stylesheet" type="text/css" href="<%= item %>.css">
+  <script type="text/javascript" src="https://cdn.webfont.youziku.com/wwwroot/js/wf/youziku.client.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+      WebView.setWebContentDebuggingEngbled(true)
+    }
+    if (window.__wxjs_environment === 'miniprogram' && navigator.userAgent.match(/(iPhone)/)) {
+      if ((screen.availHeight == 812) && (screen.availWidth == 375)) {
+        document.body.classList.add('ix')
+        if ((window.innerHeight == "375") && (window.innerWidth == "812")) {
+
+        } else {
+
+        }
+      }
+    }
+  </script>
+  <script src="<%= vendor %>.js"></script>
+  <script src="<%= item %>.js"></script>
+</body>
+</html>
