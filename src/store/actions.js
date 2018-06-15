@@ -11,12 +11,15 @@ export const setNav = ({ commit, state }, opt) => {
       break
     }
   }
-  if (opt.type === 'text') return opt.cb()
+  if (opt.type === 'text') {
+    opt.cb && opt.cb()
+    return
+  }
   commit(types.HOTMAIN, [])
   const main = cache[opt.type]
   if (main) {
     commit(types.HOTMAIN, main)
-    opt.cb()
+    opt.cb && opt.cb()
   } else {
     const i = getCode(nav, opt.type)
     axios('img', 'get', { categoryCode: i }).then((res) => {
@@ -30,10 +33,10 @@ export const setNav = ({ commit, state }, opt) => {
             res.data[i].url = res.data[i].url.replace(cache.http, cache.test)
           }
         }
-        // res.data = res.data.sort((a, b) => { return 0.5 - Math.random() })
+        res.data = res.data.sort((a, b) => { return 0.5 - Math.random() })
         cache[opt.type] = res.data
         commit(types.HOTMAIN, res.data)
-        opt.cb()
+        opt.cb && opt.cb()
         if (opt.type === 'body') {
           // if (cache[opt.type][0].createDetail) {
           //   cache.images.__path = 'body@/' + cache[opt.type][0].url

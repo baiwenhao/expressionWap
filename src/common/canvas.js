@@ -13,7 +13,6 @@ const log = console.log
 fabric.Object.prototype.originX = 'left'
 fabric.Object.prototype.originY = 'top'
 
-// window.devicePixelRatio
 const h = cache.history
 let c = ''
 
@@ -51,76 +50,77 @@ const postData = (opt) => {
   obj 选中对象
   一个身体对应一句话，一个身体可能存在多个头部
 */
-const replaceFace = (obj, arr, cb) => {
-  const imgs = []
-  let text = ''
-  for (let i = 0; i < arr.length; i++) {
-    const img = new Image()
-    img.setAttribute('crossOrigin', 'anonymous')
-    img.src = arr[i].url
-    img.path = arr[i].__path
-    img.onload = () => {
-      imgs.push(img)
-      if (imgs.length === arr.length) {
-        const params = {
-          crossOrigin: 'anonymous',
-          __path: 'group@',
-          __length: obj.__length,
-          __text: obj.__text || [],
-          __face: obj.__face || []
-        }
-        if (obj.__text) {
-          text = obj.__text
-          delete obj.__text
-        }
-        const items = obj._objects
-        const current = []
-        for (let i = 0; i < items.length; i++) {
-          if (items[i].__path.split('@')[0] === 'face') {
-            current.push(items[i])
-          }
-        }
-        obj._restoreObjectsState()
-        c.remove(obj)
-        const group = new fabric.Group(items, params)
-        c.add(group)
-        if (text[0]) text[0].__parent = group
-        for (let i = 0; i < current.length; i++) {
-          let p = { __path: imgs[i].path }
-          const angle = current[i].angle
-          let d = ''
-          if (angle) {
-            current[i].set({ angle: 0 }).setCoords()
-            d = current[i].getBoundingRect()
-            p.scaleX = d.width / imgs[i].width
-            p.scaleY = d.height / imgs[i].height
-            p.angle = angle
-            current[i].set({ angle }).setCoords()
-          } else {
-            d = current[i].getBoundingRect()
-            p.scaleX = d.width / imgs[i].width
-            p.scaleY = d.height / imgs[i].height
-          }
-          p.left = d.left
-          p.top = d.top
-          current[i].__face = new fabric.Image(imgs[i], p)
-          current[i].__face.__body = group
-          group.__face.push(current[i].__face)
-          c.add(current[i].__face)
-          for (let i = 0; i < group.__face.length; i++) {
-            group.sendBackwards()
-          }
-          d = [group].concat(group.__face)
-          if (text[0]) d = d.concat(text[0])
-          handlerEvent('blur')
-          c.setActiveObject(new fabric.ActiveSelection(d, { canvas: c }))
-          c.requestRenderAll()
-          cb && cb()
-        }
-      }
-    }
-  }
-}
+// const replaceFace = (obj, arr, cb) => {
+//   const imgs = []
+//   let text = ''
+//   for (let i = 0; i < arr.length; i++) {
+//     const img = new Image()
+//     img.setAttribute('crossOrigin', 'anonymous')
+//     img.src = arr[i].url
+//     img.path = arr[i].__path
+//     img.onload = () => {
+//       imgs.push(img)
+//       if (imgs.length === arr.length) {
+//         const params = {
+//           crossOrigin: 'anonymous',
+//           __path: 'group@',
+//           __length: obj.__length,
+//           __text: obj.__text || [],
+//           __face: obj.__face || []
+//         }
+//         if (obj.__text) {
+//           text = obj.__text
+//           delete obj.__text
+//         }
+//         const items = obj._objects
+//         const current = []
+//         for (let i = 0; i < items.length; i++) {
+//           if (items[i].__path.split('@')[0] === 'face') {
+//             current.push(items[i])
+//           }
+//         }
+//         obj._restoreObjectsState()
+//         c.remove(obj)
+//         const group = new fabric.Group(items, params)
+//         c.add(group)
+//         if (text[0]) text[0].__parent = group
+//         for (let i = 0; i < current.length; i++) {
+//           let p = { __path: imgs[i].path }
+//           const angle = current[i].angle
+//           let d = ''
+//           if (angle) {
+//             current[i].set({ angle: 0 }).setCoords()
+//             d = current[i].getBoundingRect()
+//             p.scaleX = d.width / imgs[i].width
+//             p.scaleY = d.height / imgs[i].height
+//             p.angle = angle
+//             current[i].set({ angle }).setCoords()
+//           } else {
+//             d = current[i].getBoundingRect()
+//             p.scaleX = d.width / imgs[i].width
+//             p.scaleY = d.height / imgs[i].height
+//           }
+//           p.left = d.left
+//           p.top = d.top
+//           current[i].__face = new fabric.Image(imgs[i], p)
+//           current[i].__face.__body = group
+//           group.__face.push(current[i].__face)
+//           c.add(current[i].__face)
+//           for (let i = 0; i < group.__face.length; i++) {
+//             group.sendBackwards()
+//           }
+//           d = [group].concat(group.__face)
+//           if (text[0]) d = d.concat(text[0])
+//           handlerEvent('blur')
+//           c.setActiveObject(new fabric.ActiveSelection(d, { canvas: c }))
+//           c.requestRenderAll()
+//           cb && cb()
+//         }
+//       }
+//     }
+//   }
+// }
+
 const loadImg = (type, url, obj, cb, __path) => {
   let index = ''
   let text = ''
@@ -148,7 +148,6 @@ const loadImg = (type, url, obj, cb, __path) => {
           for (let i = 0; i < items.length; i++) {
             if (items[i].__path.split('@')[0] === 'face' && !items[i].__face) {
               current = items[i]
-              log(current)
               break
             }
           }
@@ -255,7 +254,7 @@ const loadImg = (type, url, obj, cb, __path) => {
         })
         c.add(t)
         c.setActiveObject(t)
-      } else if (type === 'paster') {
+      } else {
         const d = filter(img.width, img.height, cache.base)
         p.scaleX = d.w / img.width
         p.scaleY = d.h / img.height
@@ -264,7 +263,7 @@ const loadImg = (type, url, obj, cb, __path) => {
         p.top = cache.top - t.getBoundingRect().height
         p.left = (c.width - t.getBoundingRect().width) / 2
         /*
-          判断不要出画布
+          判断不要出画布，暂未实现
         */
         t.set({ top: p.top, left: p.left }).setCoords()
         c.add(t)
@@ -363,6 +362,7 @@ export const addGroup = (r, url, cb) => {
                   //   }
                   // }, url[0].__path)
                   // replaceFace(g, url, cb)
+
                   const load = function (arr, g) {
                     const face = arr.shift()
                     if (face) {
@@ -382,7 +382,6 @@ export const addGroup = (r, url, cb) => {
   }
 }
 
-
 /*
   opt 图片对象 createDetail区分是否代表标识头部的数据
 */
@@ -390,6 +389,7 @@ export const addImg = (opt) => {
   const url = opt.url
   const obj = c.getActiveObject()
   let path = cache.images.__path
+  log(path)
   const s = path.split('@')
   postData({ type: s[0], path: s[1] })
   const p = { url, path }
@@ -446,19 +446,27 @@ export const addImg = (opt) => {
         }
       } else if (t === 'text') {
         addGroup(opt)
-      } else {
-        addGroup(opt, '', () => { obj })
+      } else if (t === 'body'){
+        c.remove(obj)
+        addGroup(opt)
       }
     } else {
-     if (t === 'activeSelection' && path === 'face' || t === 'body' && path === 'body' || t === 'face' && path === 'face' || t === 'paster' && path === 'paster' || t === 'group' && path === 'face') {
+      // 添加单图没有替换
+      if (t === 'activeSelection' && path === 'face' || t === 'body' && path === 'body' || t === 'face' && path === 'face' || t === 'paster' && path === 'paster' || t === 'group' && path === 'face') {
         loadImg(path, url, obj)
       } else {
+        log(t, path)
         if (t === 'group' && path === 'body') {
           c.remove(obj)
+        } else if (t === 'activeSelection' && path === 'body') {
+          for (let i = 0; i < obj._objects.length; i++) {
+            c.remove(obj._objects[i])
+          }
+          handlerEvent('blur')
         }
         loadImg(path, url)
       }
-      // stateUser(obj.__path.split('@')[0])
+      stateUser(obj.__path && obj.__path.split('@')[0])
     }
   } else {
     if (opt.createDetail) {
@@ -469,6 +477,9 @@ export const addImg = (opt) => {
   }
 }
 
+/*
+  处理加号逻辑
+*/
 export const stateUser = (type) => {
   if (!c) return
   if (!type) {
@@ -481,6 +492,7 @@ export const stateUser = (type) => {
   }
   const menu = store.state.navActive.type
   const parent = document.querySelector('#hotList')
+
   if (!parent) return
   if (menu === 'body' && type === 'group' || type === 'body') {
     parent.classList.add('show')
@@ -524,15 +536,19 @@ export const setCanvas = (id, cb) => {
     const s = document.querySelector('#save_canvas')
     if (s) s.classList.add('save')
   }
-
+  c.renderAll()
   if (cache.createDetail) {
     addImg(cache.createDetail)
     delete cache.createDetail
   } else if (cache.images && cache.images.url) {
+    if (cache.activeObj) {
+      c.setActiveObject(cache.activeObj)
+      delete cache.activeObj
+    }
     addImg({ url: cache.images.url })
     delete cache.images.url
   }
-  c.renderAll()
+
   cb && cb(cache)
 
   // app
@@ -548,7 +564,7 @@ export const setCanvas = (id, cb) => {
     'selection:cleared': (e) => {
       clearTimeout(cache.stateTime)
       cache.stateTime = setTimeout(() => {
-        // stateUser()
+        stateUser()
       }, 500)
     },
     'object:selected': (e) => {
@@ -570,7 +586,7 @@ export const setCanvas = (id, cb) => {
       }, 100)
       if (t && t.type === 'group' && t.__face.length) targetSelection(t)
       if (t && t.__text && t.__text.length) targetSelection(t)
-      // stateUser(t.__path.split('@')[0])
+      stateUser(obj.__path && t.__path.split('@')[0])
       clearTimeout(cache.stateTime)
     },
     'object:added': (e) => {
@@ -604,7 +620,6 @@ export const setCanvas = (id, cb) => {
           c.remove(tar.__text[i])
         }
       } else if (tar.__parent && tar.type === 'textbox') {
-        log(tar.__parent)
         const d = tar.__parent.__text
         if (d && d.length) {
           for (let i = 0; i < d.length; i++) {
@@ -961,14 +976,15 @@ export const handlerEvent = (type, name) => {
     obj.set(flip)
     c.renderAll()
   } else if (type === 'copy') {
+    cache.activeObj = c.getActiveObject()
     c.discardActiveObject()
     const obj = fabric.util.object.clone(c.getObjects())
     cache._canvas = obj
+    name && name()
   }
 }
 
 export const addLocalImg = (data, type) => {
-  handlerEvent('blur')
   if (!data) return
   if (store.state.navActive.type === 'head') {
     show()
@@ -994,7 +1010,7 @@ export const addLocalImg = (data, type) => {
               if (x.status === 200) {
                 const d = JSON.parse(x.responseText)
                 if (d.status) {
-                  cache.images.__path = 'local@'
+                  cache.images.__path = 'face@/' + d.data.url
                   addImg({ url: d.data.url })
                 } else {
                   Toast.top('未识别出人物脸部,请重新上传！')

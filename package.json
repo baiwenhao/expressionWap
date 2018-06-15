@@ -15,7 +15,7 @@
     "app": "DEV=app node ./build/task/vue",
     "edit": "DEV=edit node ./build/task/vue",
     "test": "DEV=cms node ./build/task/test",
-    "build": "node ./build/task/build",
+    "build-app": "DEV=app node ./build/task/build",
     "build-edit": "DEV=edit node ./build/task/build",
     "build-cms": "DEV=cms node ./build/task/build"
   },

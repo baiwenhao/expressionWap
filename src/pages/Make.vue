@@ -86,14 +86,13 @@
       ...mapActions(['search']),
       seeMore () {
         if (this.navActive.type !== 'text') {
-          handlerEvent('copy')
-          this.$router.push({
-            name: 'expression',
-            query: {
-              type: this.navActive.type
-            }
-          }, () => {
-            // cb
+          handlerEvent('copy', () => {
+            this.$router.push({
+              name: 'expression',
+              query: {
+                type: this.navActive.type
+              }
+            })
           })
         } else {
           this.search({ name: 'random' })

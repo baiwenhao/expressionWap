@@ -94,7 +94,6 @@ router.beforeEach((to, from, next) => {
       params.type = to.name
     }
     store.dispatch('setNav', params)
-    next()
   } else {
     next()
   }

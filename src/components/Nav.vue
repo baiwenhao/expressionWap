@@ -11,7 +11,7 @@
 
 <script>
   import { nav } from '../api/data'
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     data () {
@@ -25,10 +25,12 @@
       })
     },
     methods: {
+      ...mapActions(['setNav']),
       pageTab (e, v) {
         // const status = e.target.classList.contains('active')
         this.active.left = document.querySelector('#scrollHot').scrollLeft
-        this.$router.push({ name: v.type })
+        this.setNav(v)
+        // this.$router.push({ name: v.type })
       }
     }
   }
