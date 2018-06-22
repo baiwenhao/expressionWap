@@ -12,6 +12,8 @@
       <nav-view />
     </div>
     <search-word ref="search" />
+    <!-- test   -->
+    <!-- <div @click="loadPage" class="test">刷新页面</div> -->
   </div>
 </template>
 
@@ -97,6 +99,9 @@
         } else {
           this.search({ name: 'random' })
         }
+      },
+      loadPage () {
+        location.assign(location.href)
       }
     }
   }
@@ -179,4 +184,13 @@
   .operating .cont .cont_active img {
     transform: scale(1.12);
   }
+  /*.test {
+    position: fixed;
+    right: 0;
+    bottom: -12px;
+    padding: 6px 12px;
+    font-size: 30px;
+    background-color: #000;
+    color: #fff;
+  }*/
 </style>

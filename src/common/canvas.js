@@ -128,7 +128,7 @@ const loadImg = (type, url, obj, cb, __path) => {
   img.setAttribute('crossOrigin', 'anonymous')
   img.src = url
   img.onload = () => {
-    let p = { __path: __path || cache.images.__path }
+    let p = { __path: __path || cache.images.__path, crossOrigin: 'anonymous' }
     if (obj) {
       if (type === 'face') {
         if (obj.type === 'group') {
@@ -389,7 +389,6 @@ export const addImg = (opt) => {
   const url = opt.url
   const obj = c.getActiveObject()
   let path = cache.images.__path
-  log(path)
   const s = path.split('@')
   postData({ type: s[0], path: s[1] })
   const p = { url, path }
@@ -455,7 +454,6 @@ export const addImg = (opt) => {
       if (t === 'activeSelection' && path === 'face' || t === 'body' && path === 'body' || t === 'face' && path === 'face' || t === 'paster' && path === 'paster' || t === 'group' && path === 'face') {
         loadImg(path, url, obj)
       } else {
-        log(t, path)
         if (t === 'group' && path === 'body') {
           c.remove(obj)
         } else if (t === 'activeSelection' && path === 'body') {
@@ -527,10 +525,9 @@ export const setCanvas = (id, cb) => {
 
   // par.insertAdjacentHTML('beforeend', '<canvas id="_canvas"></canvas>')
   cache.canvas = Object.assign(_canvas, { width, height })
-  window.cs = c = new fabric.Canvas('_canvas', cache.canvas)
-  fabric.Canvas.prototype.customiseControls(Controls)
   fabric.Object.prototype.customiseCornerIcons(Icons, () => { c.renderAll()})
-
+  fabric.Canvas.prototype.customiseControls(Controls)
+  window.cs = c = new fabric.Canvas('_canvas', cache.canvas)
   if (cache._canvas) {
     for (const key in cache._canvas) c.add(cache._canvas[key])
     const s = document.querySelector('#save_canvas')

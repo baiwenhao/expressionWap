@@ -74,9 +74,8 @@
     </div>
     <div v-show="!buildImg" class="title"><i class="ico"></i>牛人日记</div>
     <div v-show="!buildImg" id="waterfall" class="waterfall">
-      <ul class="water_items"></ul>
-      <div style="width: 12px;"></div>
-      <ul class="water_items"></ul>
+      <ul class="w1 water_items"></ul>
+      <ul class="w2 water_items"></ul>
     </div>
     <div v-show="!buildImg" id="loadingText" class="loading_text">正在加载</div>
     <div v-if="pc" id="bottom" class="bottom" @click="getApp">
@@ -394,7 +393,7 @@
         })
       },
       loadImg (arr) {
-        const w = (document.querySelector('#make').offsetWidth - 36) / 2
+        const w = (document.querySelector('#make').offsetWidth - 12) / 2
         const water = document.querySelector('#waterfall')
         const ul = water.querySelectorAll('ul')
         let obj = ''
@@ -629,16 +628,23 @@
     background-color: #fff;
   }
   .waterfall {
-    display: flex;
-    justify-content: center;
-    align-items: end;
+    overflow: hidden;
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: end;*/
     position: relative;
     margin-bottom: 30px;
     background-color: #fff;
   }
+  .w1 {
+    float: left;
+  }
+  .w2 {
+    float: right;
+  }
   .water_items {
-    max-width: 302px;
-    width: calc((100vw - 36px) / 2);
+    max-width: 314px;
+    width: calc((100vw - 12px) / 2);
     box-sizing: border-box;
   }
   .water_items li {

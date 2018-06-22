@@ -13,6 +13,8 @@ fse.emptyDirSync(path.resolve(__dirname, '../../dist'))
 const port = process.env.port || 6666
 
 webpackConfig.watch = true
+webpackConfig.output.filename = '[name].js'
+webpackConfig.output.chunkFilename = '[name].js'
 if (process.env.DEV === 'app') {
   webpackConfig.output.publicPath = `//make.51biaoqing.com/`
 } else {
