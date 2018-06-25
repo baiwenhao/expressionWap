@@ -259,7 +259,6 @@
       },
       build (e, share) {
         show()
-        console.log(e, share)
         if (share && share === 'share') {
           e.target.style.display = 'none'
           data.fd.append('moments', true)
@@ -396,15 +395,15 @@
         const w = (document.querySelector('#make').offsetWidth - 12) / 2
         const water = document.querySelector('#waterfall')
         const ul = water.querySelectorAll('ul')
+        const objs = []
         let obj = ''
+        let loadIndex = 0
         for (let i = 0; i < arr.length; i++) {
-          const li = document.createElement('li')
           const img = new Image()
           img.index = i
           img.src = arr[i].imageUrl
           img.onload = () => {
-            const h = parseInt(w * img.height / img.width)
-            li.style.height = h + 'px'
+            loadIndex += 1
             const isWeixin = () => {
               return /micromessenger/.test(navigator.userAgent.toLowerCase())
             }
@@ -427,17 +426,23 @@
                 })
               }
             })
-            li.appendChild(img)
-            if (ul[0].offsetHeight > ul[1].offsetHeight) {
-              obj = ul[1]
-            } else {
-              obj = ul[0]
-            }
-            obj.appendChild(li)
-            if (img.index === arr.length - 1) {
+
+            if (loadIndex === arr.length - 1) {
               this.lock = 0
+              for (let j = 0; j < objs.length; j++) {
+                if (ul[0].offsetHeight > ul[1].offsetHeight) {
+                  obj = ul[1]
+                } else {
+                  obj = ul[0]
+                }
+                const li = document.createElement('li')
+                li.style.height = w * objs[j].img.height / objs[j].img.width
+                li.appendChild(objs[j].img)
+                obj.appendChild(li)
+              }
             }
           }
+          objs.push({ img })
         }
       }
     }

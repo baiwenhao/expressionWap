@@ -17,9 +17,9 @@
     },
     created () {
       const first = getData('first')
-      if (first !== '22') {
+      if (first !== '222') {
         this.first = 1
-        setData('first', '22')
+        setData('first', '222222')
       }
     },
     components: {
@@ -32,7 +32,3 @@
     }
   }
 </script>
-
-<style>
-
-</style>

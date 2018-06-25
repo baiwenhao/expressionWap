@@ -123,13 +123,6 @@
     width: 100%;
     height: 100%;
   }
-  .gui .info {
-    width: 277px;
-    height: 60px;
-    line-height: 60px;
-    color: #fff;
-    font-size: 15px;
-  }
   .gui .text {
     display: flex;
     text-align: center;
@@ -152,14 +145,16 @@
   }
   .gui .info {
     position: absolute;
-    left: 49px;
-    right: 49px;
+    left: 50%;
     bottom: 30px;
+    transform: translateX(-50%);
     height: 58px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    line-height: 58px;
+    padding: 0 12px;
+    padding-left: 36px;
     border-radius: 6px;
+    white-space: nowrap;
+    font-size: 14px;
     background-color: #31DFCC;
     color: #fff;
   }
@@ -174,6 +169,11 @@
     border-width: 12px;
     border-style: solid;
     border-color: #2BDAC5 transparent transparent transparent;
+  }
+  .gui .icon-dianji {
+    position: absolute;
+    left: 6px;
+    top: 0;
   }
 </style>
 
