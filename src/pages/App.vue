@@ -17,9 +17,9 @@
     },
     created () {
       const first = getData('first')
-      if (first !== '222') {
+      if (first !== 'gui') {
         this.first = 1
-        setData('first', '222222')
+        setData('first', 'gui')
       }
     },
     components: {

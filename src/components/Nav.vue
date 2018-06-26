@@ -30,6 +30,7 @@
         // const status = e.target.classList.contains('active')
         this.active.left = document.querySelector('#scrollHot').scrollLeft
         this.setNav(v)
+        this.$emit('change')
         // this.$router.push({ name: v.type })
       }
     }

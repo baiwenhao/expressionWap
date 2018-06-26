@@ -402,6 +402,7 @@
           const img = new Image()
           img.index = i
           img.src = arr[i].imageUrl
+          objs.push({ img })
           img.onload = () => {
             loadIndex += 1
             const isWeixin = () => {
@@ -415,12 +416,12 @@
                 })
               } else {
                 const swiper = document.querySelector('#swiper-container')
-                const i = list.indexOf(e.target.src)
+                const index = list.indexOf(e.target.src)
                 swiper.style.display = 'block'
                 swiper.style.width = window.innerWidth + 'px'
                 swiper.style.height = window.innerHeight + 'px'
                 new Swiper('.swiper-container', {
-                  initialSlide: i,
+                  initialSlide: index,
                   observer: true,
                   observeParents: true
                 })
@@ -442,7 +443,6 @@
               }
             }
           }
-          objs.push({ img })
         }
       }
     }

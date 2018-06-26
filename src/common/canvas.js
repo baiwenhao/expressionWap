@@ -1,3 +1,4 @@
+import GIF from 'gif.js.optimized'
 import store from '../store'
 import { fabric } from 'fabric'
 import { cache } from '../api/data'
@@ -5,7 +6,7 @@ import { axios, api } from '@api/api'
 import { show, hide } from './loading'
 import { Alert } from '@common/confirm'
 import { _canvas, _control, Controls, Icons } from '../api/canvas'
-import { dataURItoBlob, checkPlatform, sizeof, filter, filterSame, textCenter } from './util'
+import { dataURItoBlob, checkPlatform, sizeof, filter, filterSame, textCenter, blobtobase64 } from './util'
 import 'fabric-customise-controls'
 import viewImg from './viewImg'
 const log = console.log
@@ -15,6 +16,21 @@ fabric.Object.prototype.originY = 'top'
 
 const h = cache.history
 let c = ''
+
+const gifRender = (img, cb) => {
+  const gif = new GIF({
+    workerScript: '//make.51biaoqing.com/dist/gif.worker.js'
+  })
+  for (let i = 0; i < 5; i++) {
+    gif.addFrame(img)
+  }
+  gif.on('finished', function(blob, data) {
+    blobtobase64(blob, (d) => {
+      cb(d)
+    })
+  })
+  gif.render()
+}
 
 // fabric.Object.prototype.objectCaching = false
 fabric.Object.prototype.set(_control)
@@ -803,48 +819,55 @@ export const save = (e) => {
     height: p.height
   })
   c.set({ 'backgroundColor': '' }).renderAll()
+  const gif = new Image()
+  gif.src = src
+  gif.onload = () => {
+    gifRender(gif, (src) => {
+      if (window.__wxjs_environment === 'miniprogram') {
+        viewImg({ src, text: '长按图片保存' })
+      } else if (cache.dev === 'IOS' && window.webkit && window.webkit.messageHandlers.jsHandler) {
+        show()
+        store.dispatch('uploadImg', {
+          src,
+          type: 'png',
+          callback: (res) => {
+            hide()
+            if (res.status) {
+              window.webkit.messageHandlers.jsHandler.postMessage({
+                cmd: 'save',
+                param: { imageUrl: res.data }
+              })
+            } else {
+              Toast.top(res.msg)
+            }
+          }
+        })
+      } else if (cache.dev === 'Android' && window.jsHandler) {
+        show()
+        store.dispatch('uploadImg', {
+          src,
+          type: 'png',
+          callback: (res) => {
+            hide()
+            if (res.status) {
+              window.jsHandler.postMessage('{ cmd: "save", src: "' + res.data + '"}')
+            } else {
+              Toast.top(res.msg)
+            }
+          }
+        })
+      } else if (window.__wxjs_environment === 'browser') {
+        viewImg({ src, text: '长按图片保存或右键另存' })
+      } else {
+        viewImg({ src, text: '长按图片保存' })
+      }
+    })
+  }
   // document.title = sizeof(src, 'utf-8')
   // viewImg({ src, text: '长按图片保存' })
   // if (true) return
   // const u = 'https://image.baidu.com/search/detail?ct=503316480&z=&tn=baiduimagedetail&ipn=d&word=%E5%9B%BE%E7%89%87&step_word=&ie=utf-8&in=&cl=2&lm=-1&st=-1&cs=3588772980,2454248748&os=1031665791,326346256&simid=0,0&pn=1&rn=1&di=97987891320&ln=1982&fr=&fmq=1520915597475_R&ic=0&s=undefined&se=&sme=&tab=0&width=&height=&face=undefined&is=0,0&istype=2&ist=&jit=&bdtype=0&spn=0&pi=0&gsm=0&objurl=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F0142135541fe180000019ae9b8cf86.jpg%401280w_1l_2o_100sh.png&rpstart=0&rpnum=0&adpicid=0'
-  if (window.__wxjs_environment === 'miniprogram') {
-    viewImg({ src, text: '长按图片保存' })
-  } else if (cache.dev === 'IOS' && window.webkit && window.webkit.messageHandlers) {
-    show()
-    store.dispatch('uploadImg', {
-      src,
-      type: 'png',
-      callback: (res) => {
-        hide()
-        if (res.status) {
-          window.webkit.messageHandlers.jsHandler.postMessage({
-            cmd: 'save',
-            param: { imageUrl: res.data }
-          })
-        } else {
-          Toast.top(res.msg)
-        }
-      }
-    })
-  } else if (cache.dev === 'Android' && window.jsHandler) {
-    show()
-    store.dispatch('uploadImg', {
-      src,
-      type: 'png',
-      callback: (res) => {
-        hide()
-        if (res.status) {
-          window.jsHandler.postMessage('{ cmd: "save", src: "' + res.data + '"}')
-        } else {
-          Toast.top(res.msg)
-        }
-      }
-    })
-  } else if (window.__wxjs_environment === 'browser') {
-    viewImg({ src, text: '长按图片保存或右键另存' })
-  } else {
-    viewImg({ src, text: '长按图片保存' })
-  }
+
 }
 
 /* 微信小程序 */

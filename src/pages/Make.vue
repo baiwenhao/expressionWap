@@ -9,7 +9,7 @@
         </div>
         <router-view ref="scroll" />
       </div>
-      <nav-view />
+      <nav-view v-on:change="tabHander" />
     </div>
     <search-word ref="search" />
     <!-- test   -->
@@ -61,16 +61,16 @@
       // 可以访问组件实例 `this`
     // },
     beforeRouteUpdate (to, from, next) {
-      stateUser()
-      if (this.navActive.type !== 'text') {
-        tabText(this.navActive.name)
-      } else {
-        tabText()
-      }
-      if (to.name === 'text' && !cache.firstText) {
-        addText({ text: '双击修改 空格换行' })
-        cache.firstText = 1
-      }
+    //   stateUser()
+    //   if (this.navActive.type !== 'text') {
+    //     tabText(this.navActive.name)
+    //   } else {
+    //     tabText()
+    //   }
+    //   if (to.name === 'text' && !cache.firstText) {
+    //     addText({ text: '双击修改 空格换行' })
+    //     cache.firstText = 1
+    //   }
       if (to.name === 'search') {
         this.$refs.search.loadHot(() => {
           this.$refs.search.setShow(1)
@@ -78,7 +78,7 @@
       } else {
         this.$refs.search.setShow(0)
       }
-      document.querySelector('#scrollHot').scrollLeft = this.navActive.left || 0
+    //   document.querySelector('#scrollHot').scrollLeft = this.navActive.left || 0
       next()
     },
     mounted () {
@@ -86,6 +86,26 @@
     },
     methods: {
       ...mapActions(['search']),
+      tabHander () {
+        stateUser()
+        if (this.navActive.type !== 'text') {
+          tabText(this.navActive.name)
+        } else {
+          tabText()
+        }
+        if (this.navActive.type === 'text' && !cache.firstText) {
+          addText({ text: '双击修改 空格换行' })
+          cache.firstText = 1
+        }
+        // if (this.navActive.type === 'search') {
+        //   this.$refs.search.loadHot(() => {
+        //     this.$refs.search.setShow(1)
+        //   })
+        // } else {
+        //   this.$refs.search.setShow(0)
+        // }
+        document.querySelector('#scrollHot').scrollLeft = this.navActive.left || 0
+      },
       seeMore () {
         if (this.navActive.type !== 'text') {
           handlerEvent('copy', () => {

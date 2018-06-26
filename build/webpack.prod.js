@@ -39,7 +39,7 @@ if (process.env.DEV === 'cms') {
   name = 'vendor'
 } else {
   params.chunks = ['vendor', 'app']
-  params.filename = 'app.html'
+  params.filename = 'index.html'
   name = 'vendor'
 }
 const wb= merge(webpackConfig, {
