@@ -238,22 +238,20 @@
       autoHeight (t) {
         const top = document.querySelector('#areaBox')
         const par = document.querySelector('#make')
+        const s = document.body || document.documentElement
         if (!this.num) this.num = top.offsetHeight
         switch (t) {
           case 'input':
             par.classList.add('add_height')
-            const sss = document.body || document.documentElement
-            sss.scrollTop = top.offsetHeight + 66
+            s.scrollTop = top.offsetHeight + 66
             break
           case 'focus':
             par.classList.add('add_height')
-            const s = document.body || document.documentElement
             s.scrollTop = top.offsetHeight + 66
             break
           case 'blur':
             par.classList.remove('add_height')
-            const ss = document.body || document.documentElement
-            ss.scrollTop = 0
+            s.scrollTop = 0
             break
         }
       },

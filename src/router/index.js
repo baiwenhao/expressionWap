@@ -109,4 +109,21 @@ router.onReady(() => {
   localStorage.removeItem('recent_expression')
 })
 
+/* test */
+// import Router from 'vue-router'
+// import Test from '@components/Test'
+
+// Vue.use(Router)
+
+// const router = new Router({
+//   mode: 'history',
+//   routes: [
+//     {
+//       path: '/',
+//       name: 'test',
+//       component: Test
+//     }
+//   ]
+// })
+
 export default router

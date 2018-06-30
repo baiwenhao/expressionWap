@@ -785,6 +785,7 @@ export const addText = (opt = {}, status, group, cb) => {
   }
 }
 export const save = (e) => {
+  show()
   e.preventDefault()
   const obj = c.getObjects()
   if (obj.length === 0) return
@@ -823,39 +824,14 @@ export const save = (e) => {
   gif.src = src
   gif.onload = () => {
     gifRender(gif, (src) => {
-      if (window.__wxjs_environment === 'miniprogram') {
-        viewImg({ src, text: '长按图片保存' })
-      } else if (cache.dev === 'IOS' && window.webkit && window.webkit.messageHandlers.jsHandler) {
-        show()
-        store.dispatch('uploadImg', {
-          src,
-          type: 'png',
-          callback: (res) => {
-            hide()
-            if (res.status) {
-              window.webkit.messageHandlers.jsHandler.postMessage({
-                cmd: 'save',
-                param: { imageUrl: res.data }
-              })
-            } else {
-              Toast.top(res.msg)
-            }
-          }
+      hide()
+      if (window.webkit && window.webkit.messageHandlers &&  window.webkit.messageHandlers.jsHandler) {
+        window.webkit.messageHandlers.jsHandler.postMessage({
+          cmd: 'save',
+          param: { imageUrl: src }
         })
-      } else if (cache.dev === 'Android' && window.jsHandler) {
-        show()
-        store.dispatch('uploadImg', {
-          src,
-          type: 'png',
-          callback: (res) => {
-            hide()
-            if (res.status) {
-              window.jsHandler.postMessage('{ cmd: "save", src: "' + res.data + '"}')
-            } else {
-              Toast.top(res.msg)
-            }
-          }
-        })
+      } else if (window.jsHandler && window.jsHandler.postMessage) {
+        window.jsHandler.postMessage('{ cmd: "save", src: "' + res.data + '"}')
       } else if (window.__wxjs_environment === 'browser') {
         viewImg({ src, text: '长按图片保存或右键另存' })
       } else {
