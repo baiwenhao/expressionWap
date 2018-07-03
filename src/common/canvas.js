@@ -18,8 +18,18 @@ const h = cache.history
 let c = ''
 
 const gifRender = (img, cb) => {
+  const code = document.getElementById('code').textContent
+  let blob = ''
+  try {
+    blob = new Blob([code], { type: 'application/javascript' })
+  } catch (e) {
+    window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder
+    blob = new BlobBuilder()
+    blob.append(code)
+    blob = blob.getBlob()
+  }
   const gif = new GIF({
-    workerScript: '//make.51biaoqing.com/dist/gif.worker.js'
+    workerScript: URL.createObjectURL(blob)
   })
   for (let i = 0; i < 5; i++) {
     gif.addFrame(img)
@@ -820,6 +830,7 @@ export const save = (e) => {
     height: p.height
   })
   c.set({ 'backgroundColor': '' }).renderAll()
+
   const gif = new Image()
   gif.src = src
   gif.onload = () => {
@@ -831,7 +842,7 @@ export const save = (e) => {
           param: { imageUrl: src }
         })
       } else if (window.jsHandler && window.jsHandler.postMessage) {
-        window.jsHandler.postMessage('{ cmd: "save", src: "' + res.data + '"}')
+        window.jsHandler.postMessage('{ cmd: "save", src: "' + src + '"}')
       } else if (window.__wxjs_environment === 'browser') {
         viewImg({ src, text: '长按图片保存或右键另存' })
       } else {
