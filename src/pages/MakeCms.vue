@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import NavView from '../components/Nav'
+  import NavView from '../components/NavCms'
   import CanvasView from '../components/CanvasCms'
   import { mapGetters, mapActions } from 'vuex'
   import { cache } from '@api/data'

@@ -13,7 +13,7 @@ const router = new Router({
   mode: 'history',
   routes: [
     {
-      path: '/',
+      path: '/cms',
       name: 'make',
       component: Make,
       beforeEnter: (to, from, next) => {
@@ -43,7 +43,7 @@ const router = new Router({
       ]
     },
     {
-      path: '/expression',
+      path: '/cms/expression',
       name: 'expression',
       component: Expression,
       beforeEnter: (to, from, next) => {

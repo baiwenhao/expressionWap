@@ -28,6 +28,7 @@
     "gif.js.optimized": "^1.0.1",
     "html2canvas": "^1.0.0-alpha.12",
     "huebee": "^2.0.0",
+    "set-iterm2-badge": "^0.0.4",
     "vue": "2.5.13",
     "vue-router": "3.0.1",
     "vuex": "3.0.0",

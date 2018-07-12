@@ -1,6 +1,18 @@
+const iterm = require('set-iterm2-badge')
+const name = process.env.DEV
 const webpackConfig = require('../webpack.dev')
-if (process.env.DEV === 'cms') {
+if (name === 'cms') {
+  iterm('表情cms')
+  webpackConfig.output.publicPath = `//make.51biaoqing.com/`
   webpackConfig.entry.app = webpackConfig.entry.app[0].replace(/main/, 'cms')
+  delete webpackConfig.entry.edit
+} else if (name === 'edit') {
+  iterm('记仇')
+  delete webpackConfig.entry.app
+} else if (name === 'app') {
+  delete webpackConfig.entry.edit
+  webpackConfig.output.publicPath = `//make.51biaoqing.com/`
+  iterm('表情制作')
 }
 const webpackTask = require('./build-common')
 // const ip = require('ip').address()
@@ -15,10 +27,5 @@ const port = process.env.port || 6666
 webpackConfig.watch = true
 webpackConfig.output.filename = '[name].js'
 webpackConfig.output.chunkFilename = '[name].js'
-if (process.env.DEV === 'app') {
-  webpackConfig.output.publicPath = `//make.51biaoqing.com/`
-} else {
-  webpackConfig.output.publicPath = `//make.51biaoqing.com/`
-}
+
 webpackTask(webpackConfig)
-// 是你 生成多余dist到这个上级目录

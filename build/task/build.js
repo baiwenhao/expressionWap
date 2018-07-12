@@ -12,6 +12,7 @@ const compile = (buildEnv) => {
   if (process.env.DEV === 'cms') {
     const src = webpackConfig.entry.app[0]
     delete webpackConfig.entry.app
+    delete webpackConfig.entry.edit
     webpackConfig.entry.cms = src.replace(/main/, 'cms')
     const common = webpackConfig.entry.vendor.slice(0)
     delete webpackConfig.entry.vendor

@@ -5,31 +5,31 @@ import { getCode } from '@common/util'
 import { axios } from '@api/apiCms'
 
 export const setNav = ({ commit, state }, opt) => {
+  let main = ''
   for (let i = 0; i < nav.length; i++) {
     if (nav[i].type === opt.type) {
       commit(types.SETNAV, nav[i])
       break
     }
   }
-  if (opt.type === 'text') return opt.cb()
+  if (opt.type === 'text') {
+    opt.cb && opt.cb()
+    return
+  }
   commit(types.HOTMAIN, [])
-  let main = ''
+  // setTimeout(() => {
   if (cache.categoryCode) {
     main = cache[cache.categoryCode]
-    // if (!cache.cachingBody) {
-    //   cache.cachingBody = cache[opt.type]
-    //   if (document.querySelector('#view_body')) {
-    //     document.querySelector('#view_body').style.display = 'block'
-    //   }
-    // }
     cache[opt.type] = cache[cache.categoryCode]
     cache.categoryCode = ''
   } else if (cache[opt.type]) {
     main = cache[opt.type]
   }
   if (main) {
-    commit(types.HOTMAIN, main)
-    opt.cb()
+    setTimeout(() => {
+      commit(types.HOTMAIN, main)
+    }, 200)
+    opt.cb && opt.cb()
   } else {
     const i = getCode(nav, opt.type)
     axios('img', 'get', { categoryCode: i }).then((res) => {
@@ -52,13 +52,13 @@ export const setNav = ({ commit, state }, opt) => {
         } else {
           res.data = []
         }
-
         cache[opt.type] = res.data
         commit(types.HOTMAIN, res.data)
-        opt.cb()
+        opt.cb && opt.cb()
       }
     })
   }
+  // }, 2000)
 }
 
 export const setHotMain = ({ commit }, data) => {

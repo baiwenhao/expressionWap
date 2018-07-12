@@ -10,7 +10,7 @@ const conf = {
   },
   output: {
     test: `//maketest.51biaoqing.com/dist/`,
-    beta: `//make.51biaoqing.com/`,
+    beta: `//make.51biaoqing.com/dist/`,
     prod: `//make.51biaoqing.com/dist/`,
     oss: `//static.51biaoqing.com/wap/prod/0131/`
   },

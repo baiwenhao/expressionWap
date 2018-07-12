@@ -31,7 +31,7 @@ const params = {
 
 if (process.env.DEV === 'cms') {
   params.chunks = ['common', 'cms']
-  params.filename = 'make.html'
+  params.filename = 'cms.html'
   name = 'common'
 } else if (process.env.DEV === 'edit') {
   params.chunks = ['vendor', 'edit']

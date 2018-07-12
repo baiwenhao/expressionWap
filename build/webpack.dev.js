@@ -27,7 +27,7 @@ const webpackConfig = merge(base, {
       'process.env.NODE_DEV': JSON.stringify(process.env.NODE_ENV || 'development')
     }),
     new webpack.ProvidePlugin(conf.provide),
-    new webpack.optimize.CommonsChunkPlugin({
+    new webpack.optimize.CommonsChunkPlugin({ //
       name: 'vendor',
       minChunks: Infinity
     }),
@@ -37,7 +37,7 @@ const webpackConfig = merge(base, {
       contentImage: path.join(__dirname, 'utils/ok.jpg')
     }),
     new webpack.optimize.ModuleConcatenationPlugin(), // ?
-    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(), // 4 移除了
     new ManifestPlugin({
       versionFiles: [
         'vendor.css',

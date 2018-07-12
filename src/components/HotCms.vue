@@ -12,7 +12,7 @@
       </div>
       <div class="position position_bottom">
         <div class="flex">
-          <div @click="setFamily($event, v, 'color')" v-for="v in colorList" :style="{ background: v }"  class="cont_text" :class="{ 'cont_active': color === v, 'gray': v === '#FFFFFF' }"></div>
+          <div @click="setFamily($event, v, 'color')" v-for="v in colorList" track-by="$index" :style="{ background: v }"  class="cont_text" :class="{ 'cont_active': color === v, 'gray': v === '#FFFFFF' }"></div>
         </div>
       </div>
     </div>

@@ -835,17 +835,31 @@ export const save = (e) => {
   gif.src = src
   gif.onload = () => {
     gifRender(gif, (src) => {
-      hide()
       if (window.webkit && window.webkit.messageHandlers &&  window.webkit.messageHandlers.jsHandler) {
-        window.webkit.messageHandlers.jsHandler.postMessage({
-          cmd: 'save',
-          param: { imageUrl: src }
+        store.dispatch('uploadImg', {
+          src,
+          callback: (res) => {
+            hide()
+            window.webkit.messageHandlers.jsHandler.postMessage({
+              cmd: 'save',
+              param: { imageUrl: res.data }
+            })
+          }
         })
+
       } else if (window.jsHandler && window.jsHandler.postMessage) {
-        window.jsHandler.postMessage('{ cmd: "save", src: "' + src + '"}')
+        store.dispatch('uploadImg', {
+          src,
+          callback: (res) => {
+            hide()
+            window.jsHandler.postMessage('{ cmd: "save", src: "' + res.data + '"}')
+          }
+        })
       } else if (window.__wxjs_environment === 'browser') {
+        hide()
         viewImg({ src, text: '长按图片保存或右键另存' })
       } else {
+        hide()
         viewImg({ src, text: '长按图片保存' })
       }
     })
