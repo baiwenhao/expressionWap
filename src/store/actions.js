@@ -18,7 +18,9 @@ export const setNav = ({ commit, state }, opt) => {
   commit(types.HOTMAIN, [])
   const main = cache[opt.type]
   if (main) {
-    commit(types.HOTMAIN, main)
+    setTimeout(() => {
+      commit(types.HOTMAIN, main)
+    }, 0)
     opt.cb && opt.cb()
   } else {
     const i = getCode(nav, opt.type)

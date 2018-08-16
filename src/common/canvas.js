@@ -351,7 +351,7 @@ export const addGroup = (r, url, cb) => {
               d = g.getBoundingRect()
               g.set({ top: cache.top - d.height, left: (c.width - d.width) / 2 })
               c.add(g)
-              if (r.createDetail.text) {
+              if (r.createDetail.text && r.createDetail.text.length >= 1) {
                 for (let i = 0; i < r.createDetail.text.length; i++) {
                   if (i === r.createDetail.text.length - 1) {
                     addText(r.createDetail.text[i], 1, g, () => {
@@ -473,6 +473,8 @@ export const addImg = (opt) => {
         addGroup(opt)
       } else if (t === 'body'){
         c.remove(obj)
+        addGroup(opt)
+      } else if (t === 'paster') {
         addGroup(opt)
       }
     } else {

@@ -17,7 +17,7 @@
       </div>
     </div>
     <div id="hotList" class="flex" v-else>
-      <div @click="addImg(v)" v-for="v in hotMain" class="cont_img" :class="{ 'cont_active': v.active }">
+      <div @click="addImg(v)" v-for="v in hotMain"  class="cont_img" :class="{ 'cont_active': v.active }" :key="v.id">
         <img v-lazy="v.previewUrl || v.url">
         <b class="icon iconfont icon-tianjia1"></b>
       </div>

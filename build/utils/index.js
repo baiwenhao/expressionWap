@@ -19,9 +19,18 @@ exports.cssLoaders = function (options) {
 
     // Extract CSS when that option is specified
     // (which is the case during production build)
+
     if (options.extract) {
+      const option = [
+        {
+          loader: sourceLoader,
+          options:{
+            minimize: true //css压缩
+          }
+        }
+      ]
       return ExtractTextPlugin.extract({
-        use: sourceLoader,
+        use: option,
         fallback: 'vue-style-loader'
       })
     } else {
