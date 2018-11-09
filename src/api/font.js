@@ -64,12 +64,14 @@ export const yzFont = [
     key: 'f9ccf93dcce84682bcbf09bf511cb179'
   }
 ]
+
 export const iosFont = [
   {
     FontFamily: 'Yuppy SC',
     name: '雅痞-简'
   }
 ]
+
 export const androidFont = [
   {
     FontFamily: 'WenQuanYi Micro Hei',

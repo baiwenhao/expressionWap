@@ -796,6 +796,7 @@ export const addText = (opt = {}, status, group, cb) => {
     }
   }
 }
+
 export const save = (e) => {
   show()
   e.preventDefault()
@@ -837,6 +838,14 @@ export const save = (e) => {
   gif.src = src
   gif.onload = () => {
     gifRender(gif, (src) => {
+      store.dispatch('uploadImg', {
+        src,
+        callback: (res) => {
+          hide()
+          console.log(res)
+        }
+      })
+      if (1) return
       if (window.webkit && window.webkit.messageHandlers &&  window.webkit.messageHandlers.jsHandler) {
         store.dispatch('uploadImg', {
           src,
@@ -848,7 +857,6 @@ export const save = (e) => {
             })
           }
         })
-
       } else if (window.jsHandler && window.jsHandler.postMessage) {
         store.dispatch('uploadImg', {
           src,

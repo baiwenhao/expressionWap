@@ -20,7 +20,16 @@ const conf = {
     Axios: 'axios'
   }
 }
-if (process.env.DEV === 'edit') {
-  conf.tpl.chunks.splice(1, 1, 'edit')
+
+if (process.env.DEV === 'cms') {
+  conf.tpl.chunks = ['common', 'cms']
+  conf.tpl.filename = 'index.html'
+} else if (process.env.DEV === 'edit') {
+  conf.tpl.chunks = ['vendor', 'edit']
+  conf.tpl.filename = 'index.html'
+} else {
+  conf.tpl.chunks = ['vendor', 'app']
+  conf.tpl.filename = 'index.html'
 }
+
 module.exports = conf

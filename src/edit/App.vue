@@ -1,5 +1,5 @@
 <template>
-  <div id="make" class="make">
+  <div id="make" class="make" :class="{ 'make_dev' : header }">
     <div id="range" v-show="!buildImg">
       <div class="pd" style="text-align: center;height: 218px;">
         <img style="width: 266px;height: 218px;" :src="bodyActiveSrc">
@@ -94,14 +94,19 @@
     <div id="shareGif">
       朋友圈暂不支持动图表情，我们已经为您生成图片表情
     </div>
+    <div class="nav" v-show="header">
+      <img @click="backEvent" class="back" :src="back">
+      <div class="center">全名记仇</div>
+    </div>
   </div>
 </template>
 
 <script>
+  import back from '@assets/back.png'
   import logo from '@assets/logo.png'
   import bar from '@assets/bar.png'
   import { show, hide } from 'loading'
-  import { checkPlatform } from '../common/util'
+  // import { checkPlatform } from '../common/util'
   import { save, IsPC, setCanvas, postData, cache, api, getDiary, data } from '@common/canvas_edit'
   import html2canvas from 'html2canvas'
   import buildBtn from './build_btn.png'
@@ -119,13 +124,13 @@
   import 'swiper/dist/css/swiper.min.css'
 
   const list = []
-  const dev = checkPlatform()
   let _id = ''
   const date = (new Date().getMonth() + 1) + '月' + new Date().getDate() + '日，'
-
+  let env = ''
   export default {
     data () {
       return {
+        header: false,
         list: [],
         page: 1,
         lock: 0,
@@ -136,6 +141,7 @@
         buildImg: 0,
         saves,
         text,
+        back,
         body: [],
         bodyActive: {},
         bodyActiveSrc: '',
@@ -154,6 +160,11 @@
       }
     },
     created () {
+      try {
+        env = JSON.parse(window.navigator.userAgent)
+        this.header = true
+      } catch (err) {
+      }
       this.getList()
     },
     mounted () {
@@ -178,6 +189,17 @@
       })
     },
     methods: {
+      backEvent () {
+        if (this.buildImg === 1) {
+          window.history.go(-1)
+        } else {
+          if (window.webkit && window.webkit.messageHandlers) {
+            window.webkit.messageHandlers.jsHandler.postMessage('{"cmd":"close"}')
+          } else {
+            window.location.href = 'soqu://app/closeme'
+          }
+        }
+      },
       hideSwiper () {
         const swiper = document.querySelector('#swiper-container')
         swiper.style.display = 'none'
@@ -261,22 +283,25 @@
           e.target.style.display = 'none'
           data.fd.append('moments', true)
           const url = data.fd.get('imgUrl')
+
           postData(api('build'), data.fd, (res) => {
             hide()
             res = res.data
-            if (location.protocol === 'https:') {
-              res.url = res.url.replace(cache.http, cache.https)
-            } else if (location.hostname === 'maketest.51biaoqing.com') {
-              res.url = res.url.replace(cache.http, cache.test)
-            }
-
-            if (dev === 'Android' && window.jsHandler && window.jsHandler.postMessage) {
-              window.jsHandler.postMessage('{ cmd: "save", src: "' + res.url + '"}')
-            } else if (dev === 'IOS' && window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.jsHandler) {
-              window.webkit.messageHandlers.jsHandler.postMessage({ cmd: 'save', param: { imageUrl: res.url }})
+            // 带修改
+            // if (location.protocol === 'https:') {
+            //   res.url = res.url.replace(cache.http, cache.https)
+            // } else if (location.hostname === 'maketest.51biaoqing.com') {
+            //   res.url = res.url.replace(cache.http, cache.test)
+            // }
+            if (env) {
+              if (window.webkit && window.webkit.messageHandlers) {
+                window.webkit.messageHandlers.jsHandler.postMessage('{ "cmd": "save", "map": { src: "' + res.url + '"" }}')
+              } else {
+                const href = 'soqu://app/h5-make?imgName=' + res.imgName + '&isGif=' + res.isGif + '&aspectRatio=' + (res.width / res.height).toFixed(2)
+                window.location.href = href
+              }
             } else {
               const img = new Image()
-              img.setAttribute('crossOrigin', 'anonymous')
               img.src = res.url
               this.buildImg = 1
               img.onload = () => {
@@ -298,12 +323,13 @@
           })
         } else {
           html2canvas(document.querySelector('.area'), {
-            useCORS: true
+            // useCORS: true
           }).then((canvas) => {
             const src = canvas.toDataURL({
               format: 'image/png',
               multiplier: 1
             })
+
             data.fd = new FormData()
             data.fd.append('id', this.bodyActive.id)
             data.fd.append('word', document.querySelector('#area').innerHTML)
@@ -321,14 +347,16 @@
               } else if (location.hostname === 'maketest.51biaoqing.com') {
                 res.url = res.url.replace(cache.http, cache.test)
               }
-
-              if (dev === 'Android' && window.jsHandler && window.jsHandler.postMessage) {
-                window.jsHandler.postMessage('{ cmd: "save", src: "' + res.url + '"}')
-              } else if (dev === 'IOS' && window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.jsHandler) {
-                window.webkit.messageHandlers.jsHandler.postMessage({ cmd: 'save', param: { imageUrl: res.url }})
+              if (env) {
+                if (window.webkit && window.webkit.messageHandlers) {
+                  window.webkit.messageHandlers.jsHandler.postMessage('{ "cmd": "save", "map": { src: "' + res.url + '"" }}')
+                } else {
+                  const href = 'soqu://app/h5-make?imgName=' + res.imgName + '&isGif=' + res.isGif + '&aspectRatio=' + (res.width / res.height).toFixed(2)
+                  alert(href)
+                  window.location.href = href
+                }
               } else {
                 const img = new Image()
-                img.setAttribute('crossOrigin', 'anonymous')
                 img.src = res.url
                 img.onload = () => {
                   const view = document.querySelector('#view')
@@ -458,6 +486,9 @@
     min-height: 100vh;
     box-sizing: border-box;
     background-color: #F0F0F0;
+  }
+  .make.make_dev {
+    padding-top: 50px;
   }
   .make .bottom img {
     width: 100%;
@@ -757,5 +788,31 @@
     line-height: 20px;
     text-align: center;
     display: none;
+  }
+  .nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 50px;
+    max-width: 640px;
+    font-size: 18px;
+    font-weight: 900;
+    color: #333;
+    background-color: #fff;
+    z-index: 2;
+  }
+  .nav .center {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    line-height: 50px;
+    transform: translateX(-50%);
+  }
+  .nav .back {
+    float: left;
+    width: 12px;
+    padding-top: 16px;
+    padding-left: 12px;
   }
 </style>

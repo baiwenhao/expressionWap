@@ -7,6 +7,7 @@ if (name === 'cms') {
   webpackConfig.entry.app = webpackConfig.entry.app[0].replace(/main/, 'cms')
   delete webpackConfig.entry.edit
 } else if (name === 'edit') {
+  webpackConfig.output.publicPath = '/'
   iterm('记仇')
   delete webpackConfig.entry.app
 } else if (name === 'app') {

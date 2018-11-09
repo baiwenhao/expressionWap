@@ -20,7 +20,7 @@ const conf = {
     path: resolve('dist'),
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].js',
-    publicPath: `//${ip}:3000/dist/`
+    publicPath: '/'
   },
   resolve: {
     extensions: ['.vue', '.js', '.json'],

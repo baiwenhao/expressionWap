@@ -5,7 +5,7 @@ import './lib/canvas-toBlob'
 import { saveAs } from 'file-saver'
 
 export const api = (key) => {
-  const r = '//m.51biaoqing.com/'
+  const r = '//api.new.51biaoqing.com/api/v1.0.0/'
   return r + {
     list: 'match/infos',
     build: 'match/make',

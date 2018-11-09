@@ -11,6 +11,7 @@
     "dev-hot": "DEV=app node ./build/task/dev-hot",
     "dev-build": "DEV=app node ./build/task/dev-build",
     "server": "node ./build/task/app.js",
+    "edit-dev": "DEV=edit node ./build/task/dev",
     "cms": "DEV=cms node ./build/task/vue",
     "app": "DEV=app node ./build/task/vue",
     "edit": "DEV=edit node ./build/task/vue",

@@ -17,6 +17,14 @@ const resolve = (dir) => path.join(__dirname, '..', dir)
 const isProd = process.env.NODE_ENV === 'production'
 // const g = { Vue: 'vue', Toast: 'toast' }
 
+if (process.env.DEV === 'cms') {
+  name = 'common'
+} else if (process.env.DEV === 'edit') {
+  name = 'vendor'
+} else {
+  name = 'vendor'
+}
+
 const webpackConfig = merge(base, {
   module: {
     rules: utils.styleLoaders({ sourceMap: true })
@@ -28,7 +36,7 @@ const webpackConfig = merge(base, {
     }),
     new webpack.ProvidePlugin(conf.provide),
     new webpack.optimize.CommonsChunkPlugin({ //
-      name: 'vendor',
+      name,
       minChunks: Infinity
     }),
     new WebpackNotifierPlugin({
