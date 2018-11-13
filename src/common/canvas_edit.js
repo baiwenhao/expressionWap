@@ -3,6 +3,7 @@ import { filter } from '@common/util'
 import './lib/Blob'
 import './lib/canvas-toBlob'
 import { saveAs } from 'file-saver'
+import Axios from 'axios'
 
 export const api = (key) => {
   const r = '//api.new.51biaoqing.com/api/v1.0.0/'
@@ -15,16 +16,9 @@ export const api = (key) => {
 
 const nanoid = require('nanoid')
 let canvas = ''
-export const data = {}
-let timeout = ''
-let body = ''
-if (!localStorage.getItem('uuid')) {
-  data.uuid = nanoid()
-  localStorage.setItem('uuid', data.uuid)
-} else {
-  data.uuid = localStorage.getItem('uuid')
+export const data = {
+  pc: false
 }
-
 let fontSize = ''
 // https://blog.csdn.net/yanzisu_congcong/article/details/77840526
 export const cache = {
@@ -81,15 +75,21 @@ export const IsPC = () => {
   return flag
 }
 
-export const postData = (url, data, cd) => {
-  const x = new XMLHttpRequest()
-  x.open('POST', url)
-  x.onload = (res) => {
-    if (x.status === 200) {
-      cd && cd(JSON.parse(x.responseText))
-    }
-  }
-  x.send(data)
+// export const postData = (url, data, cd) => {
+//   const x = new XMLHttpRequest()
+//   x.open('POST', url)
+//   x.onload = (res) => {
+//     if (x.status === 200) {
+//       cd && cd(JSON.parse(x.responseText))
+//     }
+//   }
+//   x.send(data)
+// }
+
+export const postData = (url, data, cb) => {
+  Axios.post(url, data).then((res) => {
+    cb(res.data)
+  })
 }
 
 const dataURItoBlob = (dataURI) => {
@@ -118,3 +118,20 @@ export const img2base64 = (url, crossOrigin) => {
     img.src = url
   })
 }
+
+try {
+  data.env = JSON.parse(window.navigator.userAgent)
+  data.header = true
+  data.uuid = data.env.deviceToken
+  Axios.defaults.headers['token'] = data.env.authToken
+} catch (err) {
+  data.pc = IsPC()
+  if (!localStorage.getItem('uuid')) {
+    data.uuid = nanoid()
+    localStorage.setItem('uuid', data.uuid)
+  } else {
+    data.uuid = localStorage.getItem('uuid')
+  }
+}
+
+

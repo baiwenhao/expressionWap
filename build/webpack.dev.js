@@ -21,6 +21,7 @@ if (process.env.DEV === 'cms') {
   name = 'common'
 } else if (process.env.DEV === 'edit') {
   name = 'vendor'
+  conf.tpl.filename = 'edit.html'
 } else {
   name = 'vendor'
 }

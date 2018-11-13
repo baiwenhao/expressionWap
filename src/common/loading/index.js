@@ -1,51 +1,28 @@
 require('./style.css')
+const src = require('./loading.gif')
+const img = new Image()
+img.src = src
 
-const loading = {
+const index = {
   show () {
-    this.loading = document.querySelector('#loading-animation')
-    this.mask = document.querySelector('#mask_white')
-    if (!this.mask) {
-      this.mask = this.createMask()
-      document.body.appendChild(this.mask)
-    }
-
-    if (!this.loading) {
-      this.loading = this.createMask('loading')
-      document.body.appendChild(this.loading)
-    } else {
-      this.mask.style.display = 'block'
-    }
+    if (!this.loading) document.body.appendChild(this.createMask())
     this.loading.classList.add('active')
   },
   hide () {
-    if (this.mask) { // 没有show执行hide会报错
-      this.mask.style.display = 'none'
-    }
-    if (this.loading) {
-      this.loading.classList.remove('active')
-    }
+    this.loading && this.loading.classList.remove('active')
   },
-  createMask (name) {
-    const el = document.createElement('div')
-    if (name) {
-      el.id = 'loading-animation'
-      el.innerHTML = '  <div id="wrap-loading" class="wrap-loading">' +
-      '    <div class="loading up"></div>' +
-      '    <div class="loading down"></div>' +
-      '    <div id="loading_text"></div>' +
-      '  </div>'
-    } else {
-      el.id = 'mask_white'
-    }
-    return el
+  createMask () {
+    this.loading = document.createElement('div')
+    this.loading.id = 'soqu_app'
+    this.loading.appendChild(img)
+    return this.loading
   }
 }
 
 export const show = () => {
-  loading.show()
+  index.show()
 }
 
 export const hide = () => {
-  loading.hide()
+  index.hide()
 }
-

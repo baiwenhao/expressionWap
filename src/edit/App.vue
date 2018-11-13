@@ -107,7 +107,7 @@
   import bar from '@assets/bar.png'
   import { show, hide } from 'loading'
   // import { checkPlatform } from '../common/util'
-  import { save, IsPC, setCanvas, postData, cache, api, getDiary, data } from '@common/canvas_edit'
+  import { save, setCanvas, postData, cache, api, getDiary, data } from '@common/canvas_edit'
   import html2canvas from 'html2canvas'
   import buildBtn from './build_btn.png'
   import p1 from './pic_1.png'
@@ -126,7 +126,6 @@
   const list = []
   let _id = ''
   const date = (new Date().getMonth() + 1) + '月' + new Date().getDate() + '日，'
-  let env = ''
   export default {
     data () {
       return {
@@ -145,7 +144,7 @@
         body: [],
         bodyActive: {},
         bodyActiveSrc: '',
-        pc: IsPC(),
+        pc: false,
         ff,
         p1,
         p2,
@@ -160,11 +159,8 @@
       }
     },
     created () {
-      try {
-        env = JSON.parse(window.navigator.userAgent)
-        this.header = true
-      } catch (err) {
-      }
+      this.pc = data.pc
+      this.header = data.header
       this.getList()
     },
     mounted () {
@@ -293,7 +289,7 @@
             // } else if (location.hostname === 'maketest.51biaoqing.com') {
             //   res.url = res.url.replace(cache.http, cache.test)
             // }
-            if (env) {
+            if (data.env) {
               if (window.webkit && window.webkit.messageHandlers) {
                 window.webkit.messageHandlers.jsHandler.postMessage('{ "cmd": "save", "map": { src: "' + res.url + '"" }}')
               } else {
@@ -347,12 +343,11 @@
               } else if (location.hostname === 'maketest.51biaoqing.com') {
                 res.url = res.url.replace(cache.http, cache.test)
               }
-              if (env) {
+              if (data.env) {
                 if (window.webkit && window.webkit.messageHandlers) {
                   window.webkit.messageHandlers.jsHandler.postMessage('{ "cmd": "save", "map": { src: "' + res.url + '"" }}')
                 } else {
                   const href = 'soqu://app/h5-make?imgName=' + res.imgName + '&isGif=' + res.isGif + '&aspectRatio=' + (res.width / res.height).toFixed(2)
-                  alert(href)
                   window.location.href = href
                 }
               } else {
@@ -796,7 +791,7 @@
     width: 100%;
     height: 50px;
     max-width: 640px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 900;
     color: #333;
     background-color: #fff;
@@ -811,8 +806,10 @@
   }
   .nav .back {
     float: left;
-    width: 12px;
-    padding-top: 16px;
+    width: 9px;
+    padding-top: 17px;
     padding-left: 12px;
+    padding-bottom: 16px;
+    padding-right: 16px;
   }
 </style>
