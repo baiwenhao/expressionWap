@@ -12,7 +12,8 @@ if (name === 'cms') {
   delete webpackConfig.entry.app
 } else if (name === 'app') {
   delete webpackConfig.entry.edit
-  webpackConfig.output.publicPath = `//make.51biaoqing.com/`
+  // webpackConfig.output.publicPath = `//make.51biaoqing.com/`
+  webpackConfig.output.publicPath = '/'
   iterm('表情制作')
 }
 const webpackTask = require('./build-common')

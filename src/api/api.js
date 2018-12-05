@@ -3,13 +3,8 @@ import { Confirm } from '@common/confirm'
 
 export const api = (key) => {
   if (window.navigator.onLine) {
-    // const r = window.config.siteUrl
-    let r = ''
-    if (location.protocol === 'https:') {
-      r = 'https://m.51biaoqing.com/'
-    } else {
-      r = 'http://m.51biaoqing.com/'
-    }
+    const r = '//api.new.51biaoqing.com/api/v1.0.0/'
+    // const r = '//m.51biaoqing.com'
     return r + {
       label: 'word/category',
       menu: 'templetCategory/list',

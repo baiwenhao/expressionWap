@@ -9,26 +9,23 @@
     <i id="next" class="iconfont icon-chexiao" @click="history"></i>
     <div id="save_canvas" class="pd f14" @click="save">保存</div>
     <button class="upload">
-      <i class="iconfont icon-tianjia1" style="font-size: .14rem; color: #2BDAC5;"></i>
       <span id="upload_text"></span>
       <input id="postFile" type="file" @change="file" accept="image/png,image/gif,image/jpeg" name="file" class="file">
     </button>
-    <div :class="{ 'active': flip }" class="bottom">
+    <div class="bottom">
       <button v-show="levels" @click="handlerEvent('changeLevel', 'bringForward')" class="iconfont icon-zhiyudingceng"></button>
       <button v-show="levels" @click="handlerEvent('changeLevel', 'sendBackwards')" class="iconfont icon-zhiyudiceng"></button>
-      <button @click="handlerEvent('fanzhuan', 'flipX')" style="font-size: .16rem" class="iconfont icon-zuoyoufanzhuan"></button>
-      <button @click="handlerEvent('fanzhuan', 'flipY')" style="font-size: .16rem" class="iconfont icon-shangxiafanzhuan"></button>
+      <button v-show="flip" @click="handlerEvent('fanzhuan', 'flipX')" style="font-size: .16rem" class="iconfont icon-zuoyoufanzhuan"></button>
+      <button v-show="flip" @click="handlerEvent('fanzhuan', 'flipY')" style="font-size: .16rem" class="iconfont icon-shangxiafanzhuan"></button>
+      <button @click="random" class="iconfont random">随机</button>
     </div>
   </div>
 </template>
 
 <script>
-  import { save, undo, redo, setCanvas, addLocalImg, handlerEvent } from '@common/canvas'
-  import {
-    delay,
-    fileReader,
-    compressImg
-  } from '@common/util'
+  import { save, undo, redo, setCanvas, addLocalImg, handlerEvent, random } from '@common/canvas'
+  import { delay, fileReader, compressImg } from '@common/util'
+  import { Data } from '../api/data'
   import { mapGetters } from 'vuex'
   import ViewTitle from '@components/Title'
 
@@ -43,9 +40,20 @@
     mounted () {
       setCanvas('#canvas', (cache) => {
         cache.router = this.$router
+        if (!Data.init) {
+          // const str = window.localStorage.getItem('make')
+          // if (str) {
+            // const obj = JSON.parse(str)
+            // window.cs.loadFromJSON(obj)
+            // handlerEvent('blur')
+          // }
+          Data.init = true
+        }
       })
-      if (window.__wxjs_environment === 'miniprogram') {
+      if (!Data.env) {
         document.querySelector('#callback').style.marginTop = -100 + 'px'
+      } else {
+        document.querySelector('.upload').style.display = 'none'
       }
     },
     methods: {
@@ -79,6 +87,9 @@
         delay(() => {
           e.target.id === 'previous' ? undo() : redo()
         }, 250)
+      },
+      random () {
+        random('body')
       }
     }
   }
@@ -102,23 +113,18 @@
   }
   ._canvas .bottom {
     position: absolute;
-    right: 15px;
+    right: .1rem;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: row;
     bottom: 10px;
     transition: transform .3s;
-    transform: translateY(50px);
-  }
-  ._canvas .bottom.active {
-    bottom: 10px;
-    transform: translateY(0);
   }
   ._canvas .bottom .iconfont {
     width: .3rem;
     height: .3rem;
-    margin-left: 15px;
+    margin-left: .08rem;
     border-radius: 60px;
     overflow: hidden;
     background-color: #fff;
@@ -187,5 +193,11 @@
   }
   ._canvas .active {
     color: #333;
+  }
+  ._canvas .bottom .random {
+    width: auto;
+    padding: 0 .1rem;
+    text-align: center;
+    color: #02E3D6;
   }
 </style>

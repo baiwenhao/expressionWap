@@ -2,27 +2,27 @@
   <div class="material">
     <view-title :back="goBack" :text="'素材库'" />
     <div class="menu flex">
-      <div @click="setMenu(v)" v-for="v in menu" v-show="v.code" :class="{ 'active': v.active }">{{ v.name }}</div>
+      <div @click="setMenu(v)" v-for="(v, i) in menu" :key="i" v-show="v.code" :class="{ 'active': v.active }">{{ v.name }}</div>
     </div>
     <div class="list_item" :class="[menuType === 'menuRecent' ? 'four' : 'three']">
       <div v-if="menuType === 'menuRecent'" class="flex" style="padding: 8px 18px">
         <div class="nodata" v-if="!main.length">暂无数据</div>
-        <div class="item" v-for="v in main" @click="addImg(v)">
+        <div class="item" v-for="(v, i) in main" :key="i" @click="addImg(v)">
           <img v-lazy="v.url" />
         </div>
       </div>
       <div class="flex" v-else>
         <div class="mr">
-          <div @click="setList(v)" v-for="v in subList" :class="{ 'active': !!v.active }" class="submenu">{{ v.categoryName }}</div>
+          <div @click="setList(v)" v-for="(v, i) in subList" :key="i" :class="{ 'active': !!v.active }" class="submenu">{{ v.categoryName }}</div>
         </div>
         <div class="f1 scroll">
           <div class="min_four">
             <div class="flex" style="margin-top: 10px;">
               <div class="nodata" v-if="!lock">暂无数据</div>
-              <div @click="loadMain(v)" class="item item_r" v-for="v in main">
+              <div @click="loadMain(v)" class="item item_r" v-for="(v, i) in main" :key="i">
                 <div class="bg"></div>
                 <div class="box">
-                  <img v-lazy="v.cover" />
+                  <img :src="v.cover" />
                 </div>
                 <div class="viewtext">{{ v.templetName }}</div>
               </div>
@@ -53,7 +53,7 @@
         menu,
         menuType: cache.menuActive, // string
         subList: [],
-        main: ''
+        main: []
       }
     },
     components: {

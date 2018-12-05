@@ -7,17 +7,17 @@
     </div>
     <div class="start more_menu" v-show="!lock">
       <div class="flex" style="font-size: .15rem;">
-        <span @click="setActive(v)" v-for="v in list" :class="{'active': listActive === v}">{{ v }}</span>
+        <span @click="setActive(v)" v-for="(v, i) in list" :key="i" :class="{'active': listActive === v}">{{ v }}</span>
       </div>
     </div>
     <div v-show="!lock" ref="result" class="result">
       <div class="pd"style="font-size: .14rem;">
-        <div @click="doneList($event, v)" class="pd list_text" v-for="v in searchList">{{ v }}</div>
+        <div @click="doneList($event, v)" class="pd list_text" v-for="(v, i) in searchList" :key="i">{{ v }}</div>
         <div v-if="searchList.length === 0" class="f16" style="text-align: center;margin-top: 15%;">暂无数据</div>
       </div>
     </div>
     <div v-show="lock" class="result" style="top: 94px; height: calc(100vh - 94px);">
-      <div @click="doneList($event, v)" class="pd list_text" v-for="v in result">{{ v }}</div>
+      <div @click="doneList($event, v)" class="pd list_text" v-for="(v, i) in result" :key="i">{{ v }}</div>
       <div v-if="result.length === 0" class="f16" style="text-align: center;margin-top: 15%;">暂无数据</div>
     </div>
   </div>

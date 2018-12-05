@@ -2,7 +2,7 @@
   <div id="make" class="make" :class="{ 'make_dev' : header }">
     <div id="range" v-show="!buildImg">
       <div class="pd" style="text-align: center;height: 218px;">
-        <img style="width: 266px;height: 218px;" :src="bodyActiveSrc">
+        <img :src="bodyActiveSrc">
       </div>
       <div id="areaBox" class="area">
         <div style="font-size: 16px;" id="area" ref="area" contenteditable="true" @input="autoHeight('input')" @focus="autoHeight('focus')" @blur="autoHeight('blur')"></div>
@@ -106,8 +106,7 @@
   import logo from '@assets/logo.png'
   import bar from '@assets/bar.png'
   import { show, hide } from 'loading'
-  // import { checkPlatform } from '../common/util'
-  import { save, setCanvas, postData, cache, api, getDiary, data } from '@common/canvas_edit'
+  import { save, setCanvas, postData, api, getDiary, data, imgBase64 } from '@common/canvas_edit'
   import html2canvas from 'html2canvas'
   import buildBtn from './build_btn.png'
   import p1 from './pic_1.png'
@@ -173,10 +172,16 @@
       }, 1000)
       document.title = '全民记仇'
       setCanvas((res, uuid) => {
+        show()
         _id = uuid
         this.body = res
         this.bodyActive = this.body[this.index]
         this.bodyActiveSrc = this.bodyActive.highUrl
+        const img = new Image()
+        img.src = this.bodyActive.highUrl
+        img.onload = () => {
+          hide()
+        }
         this.$refs.area.innerHTML = date + this.bodyActive.word
         this.setState()
       })
@@ -283,16 +288,17 @@
           postData(api('build'), data.fd, (res) => {
             hide()
             res = res.data
-            // 带修改
-            // if (location.protocol === 'https:') {
-            //   res.url = res.url.replace(cache.http, cache.https)
-            // } else if (location.hostname === 'maketest.51biaoqing.com') {
-            //   res.url = res.url.replace(cache.http, cache.test)
-            // }
             if (data.env) {
-              if (window.webkit && window.webkit.messageHandlers) {
-                window.webkit.messageHandlers.jsHandler.postMessage('{ "cmd": "save", "map": { src: "' + res.url + '"" }}')
+              if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.jsHandler) {
+                show()
+                imgBase64(res.url, 'anonymous').then((b64) => {
+                  hide()
+                  const base64 = b64.replace('data:image/png;base64,', '')
+                  const url = res.url.replace('http://memepic.51biaoqing.com/', '')
+                  window.webkit.messageHandlers.jsHandler.postMessage('{ "cmd": "save", "map": { "base64": "' + base64 + '", "imgName": "' + url + '", "isGif": "' + res.isGif + '", "aspectRatio": "' + (res.width / res.height).toFixed(2) + '" }}')
+                })
               } else {
+                alert(1)
                 const href = 'soqu://app/h5-make?imgName=' + res.imgName + '&isGif=' + res.isGif + '&aspectRatio=' + (res.width / res.height).toFixed(2)
                 window.location.href = href
               }
@@ -336,21 +342,22 @@
             data.fd.append('quality', this.pic === 'hd' ? 1 : 2)
 
             postData(api('build'), data.fd, (res) => {
-              hide()
               res = res.data
-              if (location.protocol === 'https:') {
-                res.url = res.url.replace(cache.http, cache.https)
-              } else if (location.hostname === 'maketest.51biaoqing.com') {
-                res.url = res.url.replace(cache.http, cache.test)
-              }
               if (data.env) {
-                if (window.webkit && window.webkit.messageHandlers) {
-                  window.webkit.messageHandlers.jsHandler.postMessage('{ "cmd": "save", "map": { src: "' + res.url + '"" }}')
+                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.jsHandler) {
+                  show()
+                  imgBase64(res.url, 'anonymous').then((b64) => {
+                    hide()
+                    const base64 = b64.replace('data:image/png;base64,', '')
+                    const url = res.url.replace('http://memepic.51biaoqing.com/', '')
+                    window.webkit.messageHandlers.jsHandler.postMessage('{ "cmd": "save", "map": { "base64": "' + base64 + '", "imgName": "' + url + '", "isGif": "' + res.isGif + '", "aspectRatio": "' + (res.width / res.height).toFixed(2) + '" }}')
+                  })
                 } else {
                   const href = 'soqu://app/h5-make?imgName=' + res.imgName + '&isGif=' + res.isGif + '&aspectRatio=' + (res.width / res.height).toFixed(2)
                   window.location.href = href
                 }
               } else {
+                hide()
                 const img = new Image()
                 img.src = res.url
                 img.onload = () => {
@@ -594,6 +601,10 @@
     position: relative;
     margin: 0 43px;
     padding-top: 23px;
+  }
+  #range .pd img {
+    max-height: 100%;
+    max-width: 100%;
   }
   #range .range_box {
     position: absolute;

@@ -23,6 +23,15 @@ const ip = require('ip').address()
 //   quiet: true
 // })
 // webpackTask(dev)
+
+// 处理缓存
+app.get("/*",function (req, res, next) {
+    res.setHeader('Last-Modified',(new Date()).toUTCString());
+    next();
+})
+app.set('view cache', false)
+app.disable('view cache')
+
 app.set('views', path.resolve(__dirname, '../../dist'))
 app.use(express.static(path.resolve(__dirname, '../../dist')))
 app.use('/static', express.static(path.resolve(__dirname, '../../dist')))
@@ -48,7 +57,10 @@ app.use('/edit', (req, res) => {
 //     item: dev.output.publicPath + 'app'
 //   })
 // })
-app.listen(port)
+
+app.listen(port, () => {
+  log(chalk.yellow(`http://${ip}:${port}\n`))
+})
 
 // devMiddleware.waitUntilValid(() => {
 //   opn(`http://${ip}:${port}`)

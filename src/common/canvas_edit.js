@@ -52,6 +52,27 @@ export const getDiary = (opt, cd) => {
   })
 }
 
+export const imgBase64 = (url, crossOrigin) => {
+  return new Promise(resolve => {
+    const img = new Image()
+
+    img.onload = () => {
+      const c = document.createElement('canvas')
+
+      c.width = img.naturalWidth
+      c.height = img.naturalHeight
+
+      const cxt = c.getContext('2d')
+
+      cxt.drawImage(img, 0, 0)
+      resolve(c.toDataURL('image/png'))
+    }
+
+    crossOrigin && img.setAttribute('crossOrigin', crossOrigin)
+    img.src = url
+  })
+}
+
 export const save = () => {
   const img = document.querySelector('#view img')
   img2base64(img.src).then((base64) => {
@@ -74,17 +95,6 @@ export const IsPC = () => {
   }
   return flag
 }
-
-// export const postData = (url, data, cd) => {
-//   const x = new XMLHttpRequest()
-//   x.open('POST', url)
-//   x.onload = (res) => {
-//     if (x.status === 200) {
-//       cd && cd(JSON.parse(x.responseText))
-//     }
-//   }
-//   x.send(data)
-// }
 
 export const postData = (url, data, cb) => {
   Axios.post(url, data).then((res) => {
@@ -123,7 +133,7 @@ try {
   data.env = JSON.parse(window.navigator.userAgent)
   data.header = true
   data.uuid = data.env.deviceToken
-  Axios.defaults.headers['token'] = data.env.authToken
+  if (data.env.authToken) Axios.defaults.headers['token'] = data.env.authToken
 } catch (err) {
   data.pc = IsPC()
   if (!localStorage.getItem('uuid')) {
@@ -133,5 +143,3 @@ try {
     data.uuid = localStorage.getItem('uuid')
   }
 }
-
-

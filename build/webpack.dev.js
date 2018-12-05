@@ -15,7 +15,6 @@ const WebpackNotifierPlugin = require('webpack-notifier')
 const utils = require('./utils')
 const resolve = (dir) => path.join(__dirname, '..', dir)
 const isProd = process.env.NODE_ENV === 'production'
-// const g = { Vue: 'vue', Toast: 'toast' }
 
 if (process.env.DEV === 'cms') {
   name = 'common'
@@ -23,8 +22,11 @@ if (process.env.DEV === 'cms') {
   name = 'vendor'
   conf.tpl.filename = 'edit.html'
 } else {
+  conf.tpl.filename = 'make.html'
   name = 'vendor'
 }
+
+console.log(process.env.NODE_ENV)
 
 const webpackConfig = merge(base, {
   module: {

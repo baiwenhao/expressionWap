@@ -702,12 +702,7 @@ export const save = (route, id) => {
   fd.append('imageType', 'png')
   fd.append('base64Str', src.replace('data:image/png;base64,', ''))
   fd.append('createDetail', JSON.stringify(p))
-  let url = ''
-  if (location.hostname === 'maketest.51biaoqing.com') {
-    url = 'http://cmstest.51biaoqing.com/templetImage/make'
-  } else {
-    url = 'http://cms.51biaoqing.com/templetImage/make'
-  }
+  let url = 'http://cms.51biaoqing.com/templetImage/make'
   const x = new XMLHttpRequest()
   x.open('POST', url)
   x.onload = (res) => {

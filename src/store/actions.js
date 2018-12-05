@@ -4,7 +4,7 @@ import { nav, cache } from '@api/data'
 import { addText } from '@common/canvas'
 import { axios, api } from '@api/api'
 
-export const setNav = ({ commit, state }, opt) => {
+export const setNav = ({ commit }, opt) => {
   for (let i = 0; i < nav.length; i++) {
     if (nav[i].type === opt.type) {
       commit(types.SETNAV, nav[i])
@@ -26,29 +26,21 @@ export const setNav = ({ commit, state }, opt) => {
     const i = getCode(nav, opt.type)
     axios('img', 'get', { categoryCode: i }).then((res) => {
       if (res.status && res.data) {
-        if (location.protocol === 'https:') {
-          for (let i = 0; i < res.data.length; i++) {
-            res.data[i].url = res.data[i].url.replace(cache.http, cache.https)
-          }
-        } else if (location.protocol === 'http:' && location.host === 'maketest.51biaoqing.com') {
-          for (let i = 0; i < res.data.length; i++) {
-            res.data[i].url = res.data[i].url.replace(cache.http, cache.test)
-          }
-        }
         res.data = res.data.sort((a, b) => { return 0.5 - Math.random() })
         cache[opt.type] = res.data
         commit(types.HOTMAIN, res.data)
         opt.cb && opt.cb()
-        if (opt.type === 'body') {
-          // if (cache[opt.type][0].createDetail) {
-          //   cache.images.__path = 'body@/' + cache[opt.type][0].url
-          //   addImg(cache[opt.type][0])
-          // }
-        }
       }
     })
   }
 }
+
+axios('img', 'get', { categoryCode: 2 }).then((res) => {
+  if (res.status && res.data) {
+    cache['head'] = res.data
+  }
+})
+
 export const search = ({ commit }, params) => {
   if (params.name === 'hotMain') {
     commit(types.HOTMAIN, params.data)
@@ -60,7 +52,7 @@ export const search = ({ commit }, params) => {
     axios(params.name, 'get', {
       tag: params.tag,
       page: params.page,
-      pageSize: 12
+      pageSize: 16
     }).then((res) => {
       params.cb(res.data)
     })
@@ -70,7 +62,7 @@ export const search = ({ commit }, params) => {
     axios(params.name, 'get', {
       tag: '热门',
       page: params.page,
-      pageSize: 12
+      pageSize: 16
     }).then((res) => {
       params.cb(res.data)
     })
@@ -94,6 +86,23 @@ export const uploadImg = ({ commit }, obj) => {
       obj.callback(JSON.parse(x.responseText))
     } else {
       Toast.top('上传出错')
+    }
+  }
+  x.send(fd)
+}
+
+export const uploadApp = ({ commit }, obj) => {
+  obj.base64 = obj.base64.replace(/data:image\/(png|jpeg|gif);base64,/, '')
+  const fd = new FormData()
+  fd.append('bucket', 'meme')
+  fd.append('base64Str', obj.base64)
+  const x = new XMLHttpRequest()
+  // const r = '//101.132.125.218:3080/api/v1.0.0/common/uploadFileTemp'
+  const r = '//api.new.51biaoqing.com/api/v1.0.0/common/uploadFileTemp'
+  x.open('POST', r)
+  x.onload = (res) => {
+    if (x.status === 200) {
+      obj.callback(JSON.parse(x.responseText))
     }
   }
   x.send(fd)

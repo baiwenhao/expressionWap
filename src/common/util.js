@@ -108,6 +108,7 @@ export const loadingImg = (src) => {
   })
 }
 
+/*
 export const sizeof = function(str, charset) {
   let total = 0,
     charCode,
@@ -139,6 +140,7 @@ export const sizeof = function(str, charset) {
   }
   return total
 }
+*/
 
 export const lock = (e) => {
   e.preventDefault()
@@ -195,10 +197,10 @@ export const textCenter = (c, t, o) => {
 export const tabText = (type) => {
   const btn = document.querySelector('#upload_text')
   if (type) {
-    btn.parentNode.style.display = 'block'
+    // btn.parentNode.style.display = 'block'
     btn.innerHTML = `上传${type}`
   } else {
-    btn.parentNode.style.display = 'none'
+    // btn.parentNode.style.display = 'none'
   }
 }
 

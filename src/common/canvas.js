@@ -1,18 +1,17 @@
 import GIF from 'gif.js.optimized'
 import store from '../store'
 import { fabric } from 'fabric'
-import { cache } from '../api/data'
+import { cache, Data } from '../api/data'
 import { axios, api } from '@api/api'
 import { show, hide } from './loading'
-import { Alert } from '@common/confirm'
+import { Confirm } from './confirm'
 import { _canvas, _control, Controls, Icons } from '../api/canvas'
-import { dataURItoBlob, checkPlatform, sizeof, filter, filterSame, textCenter, blobtobase64 } from './util'
+import { dataURItoBlob, checkPlatform, filter, filterSame, textCenter, blobtobase64 } from './util'
 import 'fabric-customise-controls'
 import viewImg from './viewImg'
-const log = console.log
 
-fabric.Object.prototype.originX = 'left'
-fabric.Object.prototype.originY = 'top'
+// fabric.Object.prototype.originX = 'left'
+// fabric.Object.prototype.originY = 'top'
 
 const h = cache.history
 let c = ''
@@ -320,13 +319,7 @@ export const addGroup = (r, url, cb) => {
           const faceImg = new Image()
           faceImg.setAttribute('crossOrigin', 'anonymous')
           faceImg.name = JSON.stringify(r.createDetail.face[j])
-          if (location.protocol === 'https:') {
-            faceImg.src = cache.https + '/make/face_location.png'
-          } else if (location.hostname === 'make.51biaoqing.com') {
-            faceImg.src = cache.http + '/make/face_location.png'
-          } else {
-            faceImg.src = cache.test + '/make/face_location.png'
-          }
+          faceImg.src = '//image.51biaoqing.com/make/face_location.png'
           faceImg.onload = () => {
             let success = 0
             const face = new fabric.Image(faceImg, JSON.parse(faceImg.name))
@@ -375,6 +368,7 @@ export const addGroup = (r, url, cb) => {
                 if (typeof url === 'string') {
                   loadImg('face', url, g, cb)
                 } else {
+                  // 多个脸部处理
                   // e_e!!! group 里面的对象
                   // loadImg('face', url[0].url, g, (G) => {
                   //   url = url.slice(1)
@@ -389,12 +383,12 @@ export const addGroup = (r, url, cb) => {
                   // }, url[0].__path)
                   // replaceFace(g, url, cb)
 
-                  const load = function (arr, g) {
+                  const load = (arr, g) => {
                     const face = arr.shift()
                     if (face) {
                       loadImg('face', face.url, g, (G) => {
                         load(arr, G)
-                      }, face.__path)
+                      })
                     }
                   }
                   load(url, g)
@@ -513,7 +507,8 @@ export const stateUser = (type) => {
     if (tar && tar.type === 'activeSelection') {
       type = 'group'
     } else {
-      type = tar ? tar.__path.split('@')[0] : ''
+      type = tar ? (tar.__path && tar.__path.split('@')[0]) : ''
+      // type = tar ? tar.__path.split('@')[0] : ''
     }
   }
   const menu = store.state.navActive.type
@@ -533,7 +528,7 @@ export const stateUser = (type) => {
 
 export const setCanvas = (id, cb) => {
   if (!document.querySelector('#_canvas').getContext) {
-    Alert({ title: '您的手机系统版本过低', text: '请升级Android6.0以上版本' })
+    alert('您的手机系统版本过低，请升级Android6.0以上版本')
     return
   }
   const par = document.querySelector(id)
@@ -561,7 +556,7 @@ export const setCanvas = (id, cb) => {
     const s = document.querySelector('#save_canvas')
     if (s) s.classList.add('save')
   }
-  c.renderAll()
+
   if (cache.createDetail) {
     addImg(cache.createDetail)
     delete cache.createDetail
@@ -573,8 +568,7 @@ export const setCanvas = (id, cb) => {
     addImg({ url: cache.images.url })
     delete cache.images.url
   }
-
-  cb && cb(cache)
+  c.renderAll()
 
   // app
   // h.lock = false
@@ -609,7 +603,8 @@ export const setCanvas = (id, cb) => {
           store.commit('SELECTED', { name: 'flip', status: 0 })
         }
       }, 100)
-      if (t && t.type === 'group' && t.__face.length) targetSelection(t)
+      // t.__face 会丢失__path
+      if (t && t.type === 'group' && t.__face && t.__face.length) targetSelection(t)
       if (t && t.__text && t.__text.length) targetSelection(t)
       stateUser(obj.__path && t.__path.split('@')[0])
       clearTimeout(cache.stateTime)
@@ -680,7 +675,7 @@ export const setCanvas = (id, cb) => {
     // },
     'mouse:down': (e) => {
       const t = e.target
-      if (t && t.type === 'group' && t.__face.length) targetSelection(t)
+      if (t && t.type === 'group' && t.__face && t.__face.length) targetSelection(t)
       if (t && t.__text && t.__text.length) targetSelection(t)
       if (!t) {
         store.commit('SELECTED', {
@@ -710,6 +705,7 @@ export const setCanvas = (id, cb) => {
   })
   update()
   // updateStatus()
+  cb && cb(cache)
 }
 
 /*
@@ -833,52 +829,32 @@ export const save = (e) => {
     height: p.height
   })
   c.set({ 'backgroundColor': '' }).renderAll()
-
   const gif = new Image()
   gif.src = src
   gif.onload = () => {
     gifRender(gif, (src) => {
-      store.dispatch('uploadImg', {
-        src,
-        callback: (res) => {
-          hide()
-          console.log(res)
-        }
-      })
-      if (1) return
-      if (window.webkit && window.webkit.messageHandlers &&  window.webkit.messageHandlers.jsHandler) {
-        store.dispatch('uploadImg', {
-          src,
-          callback: (res) => {
+      if (Data.env) {
+        store.dispatch('uploadApp', {
+          base64: src,
+          callback (res) {
             hide()
-            window.webkit.messageHandlers.jsHandler.postMessage({
-              cmd: 'save',
-              param: { imageUrl: res.data }
-            })
+            if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.jsHandler) {
+              window.webkit.messageHandlers.jsHandler.postMessage('{ "cmd": "save", "map": { "base64": "' + src.replace('data:image/png;base64,', '') + '", "imgName": "' + res.data.replace('http://memepic.51biaoqing.com/', '') + '", "isGif": "0", "aspectRatio": "' + (gif.width / gif.height).toFixed(2) + '"}}')
+            } else {
+              const url = res.data.replace(/https:\/\/|http:\/\//, '')
+              const imgName = url.slice(url.indexOf('\/') + 1)
+              const href = 'soqu://app/h5-make?imgName=' + imgName + '&isGif=0&aspectRatio=' + (gif.width / gif.height).toFixed(2)
+              window.location.href = href
+            }
           }
         })
-      } else if (window.jsHandler && window.jsHandler.postMessage) {
-        store.dispatch('uploadImg', {
-          src,
-          callback: (res) => {
-            hide()
-            window.jsHandler.postMessage('{ cmd: "save", src: "' + res.data + '"}')
-          }
-        })
-      } else if (window.__wxjs_environment === 'browser') {
-        hide()
-        viewImg({ src, text: '长按图片保存或右键另存' })
       } else {
+        // 暂时不兼容pc
         hide()
         viewImg({ src, text: '长按图片保存' })
       }
     })
   }
-  // document.title = sizeof(src, 'utf-8')
-  // viewImg({ src, text: '长按图片保存' })
-  // if (true) return
-  // const u = 'https://image.baidu.com/search/detail?ct=503316480&z=&tn=baiduimagedetail&ipn=d&word=%E5%9B%BE%E7%89%87&step_word=&ie=utf-8&in=&cl=2&lm=-1&st=-1&cs=3588772980,2454248748&os=1031665791,326346256&simid=0,0&pn=1&rn=1&di=97987891320&ln=1982&fr=&fmq=1520915597475_R&ic=0&s=undefined&se=&sme=&tab=0&width=&height=&face=undefined&is=0,0&istype=2&ist=&jit=&bdtype=0&spn=0&pi=0&gsm=0&objurl=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F0142135541fe180000019ae9b8cf86.jpg%401280w_1l_2o_100sh.png&rpstart=0&rpnum=0&adpicid=0'
-
 }
 
 /* 微信小程序 */
@@ -985,10 +961,27 @@ export const redo = () => {
 export const handlerEvent = (type, name) => {
   const obj = c.getActiveObject()
   if (type === 'back') {
-    if (cache.dev === 'Android') {
-      window.jsHandler.postMessage('{ cmd: "goBack" }')
-    } else if (cache.dev === 'IOS') {
-      window.webkit.messageHandlers.jsHandler.postMessage({ cmd: 'goBack' })
+    const d = c.toJSON()
+    // console.log(c)
+    // window.localStorage.setItem('make', JSON.stringify(c))
+    // 换缓存的数据 丢失了 __path 因此还原存在问题
+    window.localStorage.removeItem('make')
+    if (d.objects.length) {
+      Confirm('表情制作制作还未完成,<br>是否确认退出?', (state) => {
+        if (state === 'ok') {
+          if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.jsHandler) {
+            window.webkit.messageHandlers.jsHandler.postMessage('{"cmd":"close"}')
+          } else {
+            window.location.href = 'soqu://app/closeme'
+          }
+        }
+      })
+    } else {
+      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.jsHandler) {
+        window.webkit.messageHandlers.jsHandler.postMessage('{"cmd":"close"}')
+      } else {
+        window.location.href = 'soqu://app/closeme'
+      }
     }
   } else if (type === 'blur') {
     c.discardActiveObject()
@@ -1078,7 +1071,7 @@ export const addLocalImg = (data, type) => {
   }
 }
 
-/* 框选头部 */
+/* --- 框选头部 --- */
 const targetSelection = (t) => {
   handlerEvent('blur')
   const group = [t]
@@ -1093,3 +1086,39 @@ const targetSelection = (t) => {
   c.setActiveObject(new fabric.ActiveSelection(group, { canvas: c }))
   c.requestRenderAll()
 }
+
+/* --- 随机 --- */
+const randomFace = (len) => {
+  const face = cache['head']
+  const arr = []
+  for (let i = 0; i < len; i++) {
+    const index = Math.floor(face.length * Math.random())
+    arr.push({
+      url: face[index].url,
+      __path: 'face@' + face[index].url
+    })
+  }
+  return arr
+}
+
+export const random = () => {
+  c.clear()
+  let url = ''
+  const body = cache['body']
+  const index = Math.floor(body.length * Math.random())
+  cache.images = { __path: 'body@' + body[index].url }
+  if (body[index].createDetail) {
+    let params = ''
+    if (typeof body[index].createDetail === 'string') {
+      params = JSON.parse(body[index].createDetail)
+    } else {
+      params = body[index].createDetail
+    }
+    if (!params.text) {
+      store.dispatch('search', { name: 'random' })
+    }
+    url = randomFace(params.face.length)
+  }
+  addGroup(body[index], url)
+}
+

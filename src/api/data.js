@@ -1,3 +1,14 @@
+
+export const Data = {
+
+}
+
+try {
+  Data.env = JSON.parse(window.navigator.userAgent)
+} catch (err) {
+
+}
+
 export const nav = [{
   code: 1,
   name: '身体',
@@ -73,6 +84,7 @@ export const cache = {
   _history: '',
   menuActiveType: '',
   images: {},
+  // 待删除
   test: 'http://testimg.51biaoqing.com',
   http: 'http://image.51biaoqing.com',
   https: 'http://openimg.51biaoqing.com'

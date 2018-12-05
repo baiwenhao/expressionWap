@@ -1,12 +1,6 @@
 import { show, hide } from 'loading'
 export const api = (key) => {
-  // const r = window.config.siteUrl
-  let r = ''
-  if (location.protocol === 'https:') {
-    r = 'https://m.51biaoqing.com/'
-  } else {
-    r = 'http://m.51biaoqing.com/'
-  }
+  const r = '//api.new.51biaoqing.com/api/v1.0.0/'
   return r + {
     save: 'templetImage/make',
     label: 'word/category',
