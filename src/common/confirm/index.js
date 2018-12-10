@@ -22,7 +22,7 @@ Dialog.prototype.create = function () {
     '<div class="dialog_text">' + conf.text + '</div>' +
     '<div class="dialog_center">'
   if (conf.type === 'confirm') {
-    tpl += '<a class="btn_cancel">取消</a><a class="ok">确定</a></div>'
+    tpl += '<a class="btn_cancel">退出</a><a class="ok">继续创作</a></div>'
   } else {
     tpl += '<a class="ok">OK</a></div>'
   }

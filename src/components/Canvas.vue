@@ -29,6 +29,23 @@
   import { mapGetters } from 'vuex'
   import ViewTitle from '@components/Title'
 
+  const postData = (pageNo, eventNo) => {
+    const params = {
+      model: Data.env.model,
+      platform: 'h5',
+      appkey: 'quanminbiaoqing',
+      appVersion: '1.0.0',
+      deviceToken: Data.env.deviceToken,
+      buId: pageNo + '_' + eventNo,
+      occurDate: new Date().getTime(),
+      data: {
+        pageNo,
+        eventNo
+      }
+    }
+    Axios.post('http://logs.51biaoqing.com/report/common', params)
+  }
+
   export default {
     data () {
       return {
@@ -90,6 +107,7 @@
       },
       random () {
         random('body')
+        postData('20000', '20001')
       }
     }
   }

@@ -293,9 +293,9 @@
                 show()
                 imgBase64(res.url, 'anonymous').then((b64) => {
                   hide()
-                  const base64 = b64.replace('data:image/png;base64,', '')
+                  // const base64 = b64.replace('data:image/png;base64,', '')
                   const url = res.url.replace('http://memepic.51biaoqing.com/', '')
-                  window.webkit.messageHandlers.jsHandler.postMessage('{ "cmd": "save", "map": { "base64": "' + base64 + '", "imgName": "' + url + '", "isGif": "' + res.isGif + '", "aspectRatio": "' + (res.width / res.height).toFixed(2) + '" }}')
+                  window.webkit.messageHandlers.jsHandler.postMessage('{ "cmd": "save", "map": { "imgName": "' + url + '", "isGif": "' + res.isGif + '", "aspectRatio": "' + (res.width / res.height).toFixed(2) + '" }}')
                 })
               } else {
                 alert(1)

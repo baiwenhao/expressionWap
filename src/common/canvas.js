@@ -812,7 +812,6 @@ export const save = (e) => {
     if (!p._top) p._top = parseInt(o.height + o.top)
     if (p.top > o.top) p.top = parseInt(o.top)
     if (o.top + o.height > p._top) p._top = parseInt(o.top + o.height)
-
     if (!p._left) p._left = parseInt(o.width + o.left)
     if (o.left < p.left) p.left = parseInt(o.left)
     if (o.left + o.width > p._left) p._left = parseInt(o.width + o.left)
@@ -839,7 +838,7 @@ export const save = (e) => {
           callback (res) {
             hide()
             if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.jsHandler) {
-              window.webkit.messageHandlers.jsHandler.postMessage('{ "cmd": "save", "map": { "base64": "' + src.replace('data:image/png;base64,', '') + '", "imgName": "' + res.data.replace('http://memepic.51biaoqing.com/', '') + '", "isGif": "0", "aspectRatio": "' + (gif.width / gif.height).toFixed(2) + '"}}')
+              window.webkit.messageHandlers.jsHandler.postMessage('{ "cmd": "save", "map": { "imgName": "' + res.data.replace('http://memepic.51biaoqing.com/', '') + '", "isGif": "0", "aspectRatio": "' + (gif.width / gif.height).toFixed(2) + '"}}')
             } else {
               const url = res.data.replace(/https:\/\/|http:\/\//, '')
               const imgName = url.slice(url.indexOf('\/') + 1)
@@ -968,7 +967,7 @@ export const handlerEvent = (type, name) => {
     window.localStorage.removeItem('make')
     if (d.objects.length) {
       Confirm('表情制作制作还未完成,<br>是否确认退出?', (state) => {
-        if (state === 'ok') {
+        if (state === 'cancel') {
           if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.jsHandler) {
             window.webkit.messageHandlers.jsHandler.postMessage('{"cmd":"close"}')
           } else {
@@ -1121,4 +1120,3 @@ export const random = () => {
   }
   addGroup(body[index], url)
 }
-
