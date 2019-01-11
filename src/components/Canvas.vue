@@ -31,17 +31,23 @@
 
   const postData = (pageNo, eventNo) => {
     const params = {
-      model: Data.env.model,
+      // model: Data.env.model,
       platform: 'h5',
       appkey: 'quanminbiaoqing',
       appVersion: '1.0.0',
-      deviceToken: Data.env.deviceToken,
+      // deviceToken: Data.env.deviceToken,
       buId: pageNo + '_' + eventNo,
       occurDate: new Date().getTime(),
       data: {
         pageNo,
         eventNo
       }
+    }
+    if (Data.env && Data.env.model) {
+      params.model = Data.env.model
+    }
+    if (Data.env && Data.env.deviceToken) {
+      params.deviceToken = Data.env.deviceToken
     }
     Axios.post('http://logs.51biaoqing.com/report/common', params)
   }

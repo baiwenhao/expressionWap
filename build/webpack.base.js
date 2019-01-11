@@ -8,7 +8,7 @@ const ip = require('ip').address()
 const conf = {
   entry: {
     app: [resolve('src/main.js')],
-    edit: [resolve('src/edit.js')],
+    // edit: [resolve('src/edit.js')],
     vendor: [
       'vue',
       'fabric',
