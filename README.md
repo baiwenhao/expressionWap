@@ -1,4 +1,11 @@
-http://51biaoqing.com/static/mix.html  // 视频混剪
-http://51biaoqing.com/static/burn.html  // 阅后即焚
-http://51biaoqing.com/static/gif.html // 全名字幕
-http://51biaoqing.com/static/edit.html // 记仇
+## 修改本地 host 文件
+   make.51biaoqing.com 127.0.0.1
+
+## 启动服务
+  yarn run dev
+
+## 编译代码
+  yarn run app
+
+## 访问地址
+  make.51biaoqing.com/make.html
